@@ -1,7 +1,8 @@
 /* --- THEME DEFINITIONS --- */
 
 /* Emerald Dark */
-[data-theme='emerald'], :root {
+[data-theme='emerald'],
+:root {
   --deep-bg: #0a1a12;
   --row-bg: #122d21;
   --header-bg: #1a4332;
@@ -9,7 +10,8 @@
   --accent-green: #4ade80;
   --text-main: #e8f5e9;
   --auto-green: #1b3d2f;
-  --icon-color: invert(100%); /* White icons for dark bg */
+  --icon-color: invert(0);
+  /* White icons for dark bg */
 }
 
 /* Light Theme */
@@ -21,7 +23,8 @@
   --accent-green: #000000;
   --text-main: #1a1a1a;
   --auto-green: #e8e8e8;
-  --icon-color: invert(0%); /* Black icons for white bg */
+  --icon-color: invert(0%);
+  /* Black icons for white bg */
 }
 
 /* Dark Mode */
@@ -33,7 +36,7 @@
   --accent-green: #9e9e9e;
   --text-main: #ffffff;
   --auto-green: #222222;
-  --icon-color: invert(100%); /* White icons */
+  --icon-color: invert(0);
 }
 
 /* Cyber Theme */
@@ -45,12 +48,14 @@
   --accent-green: #ff79c6;
   --text-main: #f8f8f2;
   --auto-green: #240e42;
-  --icon-color: invert(100%); /* White icons */
+  --icon-color: invert(0);
 }
 
 /* 1. Global Reset */
-body, html {
-  margin: 0; padding: 0;
+body,
+html {
+  margin: 0;
+  padding: 0;
   background-color: var(--deep-bg);
   color: var(--text-main);
   font-family: sans-serif;
@@ -76,25 +81,47 @@ body, html {
   box-sizing: border-box;
 }
 
-h2 { color: var(--accent-green); margin: 0; font-weight: 700; }
+h2 {
+  color: var(--accent-green);
+  margin: 0;
+  font-weight: 700;
+}
 
-.theme-controls { display: flex; gap: 10px; margin-left: 20px; }
+.theme-controls {
+  display: flex;
+  gap: 10px;
+  margin-left: 20px;
+}
 
 .theme-btn {
-  width: 20px; height: 20px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   border: 2px solid var(--text-main);
   cursor: pointer;
 }
 
-.btn-light { background: #ffffff; }
-.btn-dark { background: #333333; }
-.btn-emerald { background: #4ade80; }
-.btn-cyber { background: #ff79c6; }
+.btn-light {
+  background: #ffffff;
+}
+
+.btn-dark {
+  background: #333333;
+}
+
+.btn-emerald {
+  background: #4ade80;
+}
+
+.btn-cyber {
+  background: #ff79c6;
+}
 
 /* 3. Input & Icon Controls (The Fix) */
-.global-inputs select, .global-inputs input,
-td input, td select {
+.global-inputs select,
+.global-inputs input,
+td input,
+td select {
   background-color: var(--deep-bg);
   border: 1px solid var(--border-green);
   color: var(--text-main) !important;
@@ -112,15 +139,23 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 }
 
 /* Prevent the browser from changing colors on focus */
-input:focus, select:focus {
+input:focus,
+select:focus {
   outline: 2px solid var(--accent-green);
   background-color: var(--deep-bg) !important;
 }
 
 /* 4. Table Styles */
-.table-container { flex-grow: 1; overflow: auto; background-color: var(--deep-bg); }
+.table-container {
+  flex-grow: 1;
+  overflow: auto;
+  background-color: var(--deep-bg);
+}
 
-table { width: 100%; border-collapse: collapse; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
 thead th {
   background-color: var(--header-bg);
@@ -133,19 +168,27 @@ thead th {
   border-bottom: 2px solid var(--border-green);
 }
 
-tr:nth-child(even) { background-color: var(--row-bg); }
+tr:nth-child(even) {
+  background-color: var(--row-bg);
+}
 
-td { border: 1px solid var(--border-green); height: 45px; }
+td {
+  border: 1px solid var(--border-green);
+  height: 45px;
+}
 
-td input, td select {
-  width: 100%; height: 100%;
+td input,
+td select {
+  width: 100%;
+  height: 100%;
   background: transparent !important;
   border: none !important;
   border-radius: 0;
 }
 
 /* Disabled Row Logic */
-td input:disabled, td select:disabled {
+td input:disabled,
+td select:disabled {
   opacity: 0.5;
   color: var(--text-main) !important;
   -webkit-text-fill-color: var(--text-main) !important;
@@ -166,7 +209,9 @@ td input:disabled, td select:disabled {
   font-style: italic;
 }
 
-.row-divider { border-top: 3px solid var(--border-green) !important; }
+.row-divider {
+  border-top: 3px solid var(--border-green) !important;
+}
 
 /* Footer */
 .footer-area {
