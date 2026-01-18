@@ -6,19 +6,41 @@ const JOBS = ["Bidding - Seller Appeal", "Inherit Traffic Daily QC", "Inherit Tr
 const ANSWERS = [{ label: "Yes", value: "Yes" }, { label: "No", value: "No" }];
 
 function App() {
+  // --- 1. INITIALIZE STATE FROM LOCALSTORAGE ---
   const [theme, setTheme] = useState(() => localStorage.getItem('app-theme') || 'emerald');
+
   const [globalData, setGlobalData] = useState(() => {
     const saved = localStorage.getItem('global-data');
     return saved ? JSON.parse(saved) : { agentName: '', date: '' };
   });
+
   const [tasks, setTasks] = useState(() => {
     const saved = localStorage.getItem('tasks-data');
-    return saved ? JSON.parse(saved) : Array(100).fill({ jobTitle: '', startTime: '', endTime: '', taskID: '', answer: '', timeSpent: '' });
+    return saved ? JSON.parse(saved) : Array(100).fill({
+      jobTitle: '', startTime: '', endTime: '',
+      taskID: '', answer: '', timeSpent: ''
+    });
   });
 
-  useEffect(() => localStorage.setItem('tasks-data', JSON.stringify(tasks)), [tasks]);
-  useEffect(() => localStorage.setItem('global-data', JSON.stringify(globalData)), [globalData]);
-  useEffect(() => localStorage.setItem('app-theme', theme), [theme]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // --- 2. PERSIST DATA TO LOCALSTORAGE ON CHANGE ---
+  useEffect(() => {
+    localStorage.setItem('tasks-data', JSON.stringify(tasks));
+  }, [tasks]);
+
+  useEffect(() => {
+    localStorage.setItem('global-data', JSON.stringify(globalData));
+  }, [globalData]);
+
+  useEffect(() => {
+    localStorage.setItem('app-theme', theme);
+  }, [theme]);
+
+
+  const handleGlobalChange = (field, value) => {
+    setGlobalData(prev => ({ ...prev, [field]: value }));
+  };
 
   const handleTaskChange = (index, field, value) => {
     const newTasks = [...tasks];
@@ -31,41 +53,94 @@ function App() {
       updatedTask.endTime = `${String(endH).padStart(2, '0')}:${String(endM % 60).padStart(2, '0')}`;
       updatedTask.timeSpent = 25;
     }
+
     if (field === 'endTime' && updatedTask.startTime && value) {
       const [sH, sM] = updatedTask.startTime.split(':').map(Number);
       const [eH, eM] = value.split(':').map(Number);
       const diff = (eH * 60 + eM) - (sH * 60 + sM);
       updatedTask.timeSpent = diff < 0 ? diff + 1440 : diff;
     }
+
     newTasks[index] = updatedTask;
     setTasks(newTasks);
   };
 
+  const clearAll = () => {
+    if (window.confirm("Clear all data? This will also wipe the browser's memory for this session.")) {
+      const emptyTasks = Array(100).fill({ jobTitle: '', startTime: '', endTime: '', taskID: '', answer: '', timeSpent: '' });
+      setTasks(emptyTasks);
+      // Optional: Clear global data too
+      // setGlobalData({ agentName: '', date: '' });
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!globalData.agentName || !globalData.date) {
+      alert("Select Agent and Date first.");
+      return;
+    }
+
+    const finalData = tasks.map((t, index) => {
+      const master = tasks[Math.floor(index / 10) * 10];
+      return {
+        agentName: globalData.agentName,
+        date: globalData.date,
+        projectNo: Math.floor(index / 10) + 1,
+        taskNo: (index % 10) + 1,
+        jobTitle: master.jobTitle,
+        startTime: master.startTime,
+        endTime: master.endTime,
+        timeSpent: master.timeSpent,
+        taskID: t.taskID,
+        answer: t.answer
+      };
+    }).filter(t => t.taskID.trim() !== "" || t.answer !== "");
+
+    if (finalData.length === 0) return alert("No data to submit.");
+
+    setIsSubmitting(true);
+    try {
+      const URL = "https://script.google.com/macros/s/AKfycbzz-LyLUrN5nm8Ow-bNYpvgnIlNkKvShjslLbcIwSObmjkGWutZYhvLixuO1p0aiUTh5A/exec";
+      await fetch(URL, { method: "POST", mode: "no-cors", body: JSON.stringify(finalData) });
+      alert(`Success! ${finalData.length} tasks uploaded.`);
+
+      // AUTO-CLEAR AFTER SUCCESS (Highly Recommended)
+      if (window.confirm("Data saved! Do you want to clear the board for the next batch?")) {
+        setTasks(Array(100).fill({ jobTitle: '', startTime: '', endTime: '', taskID: '', answer: '', timeSpent: '' }));
+      }
+    } catch (e) {
+      alert("Submission failed. Please check your internet.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="container" data-theme={theme}>
-      <header className="header-section">
+      <div className="header-section">
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
           <h2>Efficiency Tracker</h2>
           <div className="theme-controls">
-            {['light', 'dark', 'emerald', 'cyber'].map(t => (
-              <button key={t} className={`theme-btn btn-${t}`} onClick={() => setTheme(t)} />
-            ))}
+            <button className="theme-btn btn-light" onClick={() => setTheme('light')} title="Light"></button>
+            <button className="theme-btn btn-dark" onClick={() => setTheme('dark')} title="Dark"></button>
+            <button className="theme-btn btn-emerald" onClick={() => setTheme('emerald')} title="Emerald"></button>
+            <button className="theme-btn btn-cyber" onClick={() => setTheme('cyber')} title="Cyber"></button>
           </div>
         </div>
         <div className="global-inputs">
-          <select value={globalData.agentName} onChange={(e) => setGlobalData({...globalData, agentName: e.target.value})}>
+          <select value={globalData.agentName} onChange={(e) => handleGlobalChange('agentName', e.target.value)}>
             <option value="">Select Agent...</option>
             {AGENTS.map(a => <option key={a} value={a}>{a}</option>)}
           </select>
-          <input type="date" value={globalData.date} onChange={(e) => setGlobalData({...globalData, date: e.target.value})} />
+          <input type="date" value={globalData.date} onChange={(e) => handleGlobalChange('date', e.target.value)} />
         </div>
-      </header>
+      </div>
 
-      <main className="table-container">
+      <div className="table-container">
         <table>
           <thead>
             <tr>
-              <th>Proj</th><th>Task</th><th>Job Title</th><th>Task ID</th>
+              <th>Project</th><th>Task</th><th>Job Title</th><th>Task ID</th>
               <th>Start</th><th>End</th><th>Min</th><th>Answer</th>
             </tr>
           </thead>
@@ -75,23 +150,26 @@ function App() {
               const master = tasks[Math.floor(index / 10) * 10];
               return (
                 <tr key={index} className={isFirst ? "row-divider" : ""}>
-                  <td className="auto-field" style={{width: '50px'}}>{Math.floor(index / 10) + 1}</td>
-                  <td className="auto-field" style={{width: '50px'}}>{(index % 10) + 1}</td>
-                  <td style={{width: '250px'}}>
-                    <select value={isFirst ? task.jobTitle : master.jobTitle} disabled={!isFirst} 
+                  <td className="auto-field">{Math.floor(index / 10) + 1}</td>
+                  <td className="auto-field">{(index % 10) + 1}</td>
+                  <td>
+                    <select
+                      value={isFirst ? task.jobTitle : master.jobTitle}
+                      disabled={!isFirst}
                       onChange={(e) => handleTaskChange(index, 'jobTitle', e.target.value)}
-                      className={!isFirst ? "inherited-field" : ""}>
+                      className={!isFirst ? "inherited-field" : ""}
+                    >
                       <option value="">Select Job...</option>
                       {JOBS.map(j => <option key={j} value={j}>{j}</option>)}
                     </select>
                   </td>
-                  <td><input type="text" value={task.taskID} onChange={(e) => handleTaskChange(index, 'taskID', e.target.value)} /></td>
-                  <td style={{width: '130px'}}><input type="time" value={isFirst ? task.startTime : master.startTime} disabled={!isFirst}
+                  <td><input type="text" value={task.taskID} onChange={(e) => handleTaskChange(index, 'taskID', e.target.value)} placeholder="-" /></td>
+                  <td><input type="time" value={isFirst ? task.startTime : master.startTime} disabled={!isFirst}
                     onChange={(e) => handleTaskChange(index, 'startTime', e.target.value)} className={!isFirst ? "inherited-field" : ""} /></td>
-                  <td style={{width: '130px'}}><input type="time" value={isFirst ? task.endTime : master.endTime} disabled={!isFirst}
+                  <td><input type="time" value={isFirst ? task.endTime : master.endTime} disabled={!isFirst}
                     onChange={(e) => handleTaskChange(index, 'endTime', e.target.value)} className={!isFirst ? "inherited-field" : ""} /></td>
-                  <td className="auto-field" style={{width: '60px'}}>{master.timeSpent || '-'}</td>
-                  <td style={{width: '100px'}}>
+                  <td className="auto-field">{master.timeSpent || '-'}</td>
+                  <td>
                     <select value={task.answer} onChange={(e) => handleTaskChange(index, 'answer', e.target.value)}>
                       <option value="">-</option>
                       {ANSWERS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
@@ -102,12 +180,13 @@ function App() {
             })}
           </tbody>
         </table>
-      </main>
-
-      <footer className="footer-area">
-        <button className="clear-btn" onClick={() => setTasks(Array(100).fill({jobTitle:'',startTime:'',endTime:'',taskID:'',answer:'',timeSpent:''}))}>Clear Board</button>
-        <button className="submit-btn">Submit All</button>
-      </footer>
+      </div>
+      <div className="footer-area">
+        <button className="clear-btn" onClick={clearAll} disabled={isSubmitting}>Clear Board</button>
+        <button className="submit-btn" onClick={handleSubmit} disabled={isSubmitting}>
+          {isSubmitting ? "Uploading..." : "Submit All"}
+        </button>
+      </div>
     </div>
   );
 }
