@@ -99,7 +99,7 @@ function App() {
               <th style={{ width: '55px' }}>Proj</th>
               <th style={{ width: '55px' }}>Task</th>
               <th style={{ width: '260px' }}>Job Title</th>
-              <th>Task ID</th>
+              <th>Task ID</th> {/* Flexible column - stretches to fill right side */}
               <th style={{ width: '135px' }}>Start</th>
               <th style={{ width: '135px' }}>End</th>
               <th style={{ width: '70px' }}>Min</th>
@@ -141,7 +141,7 @@ function App() {
         </table>
       </div>
       <div className="footer-area">
-        <button className="clear-btn" onClick={() => setTasks(Array(100).fill({ jobTitle: '', startTime: '', endTime: '', taskID: '', answer: '', timeSpent: '' }))} disabled={isSubmitting}>Clear Board</button>
+        <button className="clear-btn" onClick={() => { if(window.confirm("Clear board?")) setTasks(Array(100).fill({ jobTitle: '', startTime: '', endTime: '', taskID: '', answer: '', timeSpent: '' })) }} disabled={isSubmitting}>Clear Board</button>
         <button className="submit-btn" onClick={handleSubmit} disabled={isSubmitting}>
           {isSubmitting ? "Uploading..." : "Submit All"}
         </button>

@@ -49,14 +49,18 @@
 
 /* 1. Global Reset */
 body, html {
-  margin: 0; padding: 0;
+  margin: 0;
+  padding: 0;
   background-color: var(--deep-bg);
   color: var(--text-main);
   font-family: sans-serif;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .container {
   min-height: 100vh;
+  width: 100vw;
   display: flex;
   flex-direction: column;
 }
@@ -69,6 +73,7 @@ body, html {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-sizing: border-box;
 }
 
 .theme-controls { display: flex; gap: 10px; }
@@ -85,13 +90,27 @@ body, html {
 .btn-emerald { background: #4ade80; }
 .btn-cyber { background: #ff79c6; }
 
-/* 3. Table Layout (FIXED TO PREVENT SHIFTING) */
-.table-container { flex-grow: 1; overflow: auto; }
+.global-inputs { display: flex; gap: 10px; }
+.global-inputs select, .global-inputs input {
+  background-color: var(--deep-bg);
+  border: 1px solid var(--border-green);
+  color: var(--text-main);
+  padding: 8px;
+  border-radius: 6px;
+}
 
-table { 
-  width: 100%; 
-  border-collapse: collapse; 
-  table-layout: fixed; /* CRITICAL: Stops shifting on refresh */
+/* 3. Table Layout - The Fix for White Space & Shifting */
+.table-container {
+  flex-grow: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed; /* Ensures columns stay put and stretch to fill */
 }
 
 thead th {
@@ -100,23 +119,22 @@ thead th {
   padding: 12px;
   font-size: 13px;
   position: sticky;
-  top: 0; z-index: 10;
+  top: 0;
+  z-index: 10;
   border-bottom: 2px solid var(--border-green);
   text-align: left;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 td {
   height: 45px;
   border: 1px solid var(--border-green);
   padding: 0;
-  overflow: hidden; /* Prevents cell expansion */
 }
 
 td input, td select {
-  width: 100%; height: 100%;
+  width: 100%;
+  height: 100%;
   background: transparent !important;
   color: var(--text-main) !important;
   border: none !important;
@@ -132,7 +150,7 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   border-radius: 4px;
   padding: 4px;
   cursor: pointer;
-  margin-right: 8px; /* Stops overlapping into next column */
+  margin-right: 8px; /* Keeps it inside its own cell */
 }
 
 /* Specialized Logic */
