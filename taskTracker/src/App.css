@@ -38,7 +38,7 @@
   --text-main: #ffffff;
   --auto-green: #222222;
   --btn-box-bg: #ffffff;
-  --btn-icon-filter: invert(0);
+  --btn-icon-filter: invert(1);
 }
 
 [data-theme='cyber'] {
