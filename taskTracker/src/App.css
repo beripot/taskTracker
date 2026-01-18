@@ -1,5 +1,8 @@
 /* --- THEME DEFINITIONS --- */
-[data-theme='emerald'], :root {
+
+/* Emerald Dark (Original) */
+[data-theme='emerald'],
+:root {
   --deep-bg: #0a1a12;
   --row-bg: #122d21;
   --header-bg: #1a4332;
@@ -7,10 +10,9 @@
   --accent-green: #4ade80;
   --text-main: #e8f5e9;
   --auto-green: #1b3d2f;
-  --btn-wrap-bg: #4ade80; /* Theme-colored box */
-  --btn-icon-filter: invert(0); /* Black icon on green box */
 }
 
+/* Light Theme (White/Black) */
 [data-theme='light'] {
   --deep-bg: #ffffff;
   --row-bg: #f2f2f2;
@@ -19,10 +21,9 @@
   --accent-green: #000000;
   --text-main: #1a1a1a;
   --auto-green: #e8e8e8;
-  --btn-wrap-bg: #000000; /* Black box */
-  --btn-icon-filter: invert(1); /* White icon on black box */
 }
 
+/* Dark Mode (Black/Grey) */
 [data-theme='dark'] {
   --deep-bg: #000000;
   --row-bg: #1a1a1a;
@@ -31,10 +32,9 @@
   --accent-green: #9e9e9e;
   --text-main: #ffffff;
   --auto-green: #222222;
-  --btn-wrap-bg: #ffffff; /* White box */
-  --btn-icon-filter: invert(0); /* Black icon on white box */
 }
 
+/* Cyber Theme (Purple/Pink) */
 [data-theme='cyber'] {
   --deep-bg: #1a0b2e;
   --row-bg: #2d134d;
@@ -43,13 +43,13 @@
   --accent-green: #ff79c6;
   --text-main: #f8f8f2;
   --auto-green: #240e42;
-  --btn-wrap-bg: #ff79c6; /* Pink box */
-  --btn-icon-filter: invert(0); /* Black icon on pink box */
 }
 
 /* 1. Global Reset */
-body, html {
-  margin: 0; padding: 0;
+body,
+html {
+  margin: 0;
+  padding: 0;
   background-color: var(--deep-bg);
   color: var(--text-main);
   font-family: sans-serif;
@@ -57,36 +57,86 @@ body, html {
 
 .container {
   min-height: 100vh;
+  width: 100vw;
   display: flex;
   flex-direction: column;
+  background-color: var(--deep-bg);
+  transition: background-color 0.3s ease;
 }
 
 /* 2. Header Section */
 .header-section {
+  width: 100%;
   padding: 15px 40px;
   background-color: var(--row-bg);
   border-bottom: 2px solid var(--border-green);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-sizing: border-box;
+}
+
+h2 {
+  color: var(--accent-green);
+  margin: 0;
+  font-weight: 700;
+}
+
+/* Theme Controls */
+.theme-controls {
+  display: flex;
+  gap: 10px;
+  margin-left: 20px;
 }
 
 .theme-btn {
-  width: 20px; height: 20px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   border: 2px solid var(--text-main);
   cursor: pointer;
+  transition: transform 0.2s;
 }
 
-.btn-light { background: #ffffff; }
-.btn-dark { background: #333333; }
-.btn-emerald { background: #4ade80; }
-.btn-cyber { background: #ff79c6; }
+.theme-btn:hover {
+  transform: scale(1.2);
+}
 
-/* 3. Input & Table Alignment Fixes */
-.table-container { flex-grow: 1; overflow: auto; }
+.btn-light {
+  background: #ffffff;
+}
 
-table { width: 100%; border-collapse: collapse; }
+.btn-dark {
+  background: #333333;
+}
+
+.btn-emerald {
+  background: #4ade80;
+}
+
+.btn-cyber {
+  background: #ff79c6;
+}
+
+.global-inputs select,
+.global-inputs input {
+  background-color: var(--deep-bg);
+  border: 1px solid var(--border-green);
+  color: var(--text-main);
+  padding: 8px;
+  border-radius: 6px;
+}
+
+/* 3. Table Styles */
+.table-container {
+  flex-grow: 1;
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
 thead th {
   background-color: var(--header-bg);
@@ -94,47 +144,84 @@ thead th {
   padding: 12px;
   font-size: 12px;
   position: sticky;
-  top: 0; z-index: 10;
+  top: 0;
+  z-index: 10;
   border-bottom: 2px solid var(--border-green);
-  text-align: left;
+}
+
+tr:nth-child(even) {
+  background-color: var(--row-bg);
+}
+
+tr:hover {
+  background-color: rgba(74, 222, 128, 0.05);
 }
 
 td {
-  border: 1px solid var(--border-green);
   height: 45px;
-  padding: 0; /* Clear default padding */
+  border: 1px solid var(--border-green);
+  position: relative;
 }
 
-/* Base input style */
-td input, td select {
-  width: 100%; height: 100%;
-  background: transparent !important;
-  border: none !important;
-  color: var(--text-main) !important;
+td input,
+td select {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  color: var(--text-main);
+  border: none;
   padding: 0 10px;
   box-sizing: border-box;
 }
 
-/* 4. THE BUTTON BOX (The Specific Fix) */
-input[type="date"]::-webkit-calendar-picker-indicator,
-input[type="time"]::-webkit-calendar-picker-indicator {
-  /* THE WRAPPING BOX */
-  background-color: var(--btn-wrap-bg) !important;
-  padding: 5px;
-  border-radius: 4px;
-  
-  /* POSITIONING: Pull it away from the edge */
-  margin-right: 8px; 
-  cursor: pointer;
-  
-  /* THE ICON COLOR */
-  filter: var(--btn-icon-filter) !important;
-  opacity: 1;
+/* Target disabled selects (Job Title in rows 2-10) */
+td select:disabled {
+  background-color: transparent !important;
+  color: var(--text-main) !important;
+  opacity: 0.7;
+  /* Makes it look slightly different but still readable */
+  cursor: not-allowed;
+  -webkit-text-fill-color: var(--text-main);
+  /* Required for Safari/iOS */
 }
 
-/* 5. Specialized Row Logic */
-tr:nth-child(even) { background-color: var(--row-bg); }
+/* Ensure the dropdown arrow doesn't disappear in some themes */
+td select {
+  appearance: auto;
+  /* Restores the default arrow which adapts better to themes */
+}
 
+/* Ensure the dropdown itself and the popup list use theme colors */
+select,
+option {
+  background-color: var(--row-bg);
+  /* The background of the list */
+  color: var(--text-main) !important;
+  /* Forces the text color to update */
+}
+
+/* Fix for Global Inputs (Agent name and Date) */
+.global-inputs select,
+.global-inputs input,
+.global-inputs option {
+  background-color: var(--deep-bg);
+  color: var(--text-main);
+}
+
+/* Chrome/Edge specific: prevents the browser from forcing a white background on autofill or focus */
+select:focus,
+input:focus {
+  background-color: var(--row-bg) !important;
+  color: var(--text-main) !important;
+}
+
+td input:focus,
+td select:focus {
+  background-color: rgba(128, 128, 128, 0.1);
+  outline: none;
+}
+
+/* Specialized Fields */
 .auto-field {
   background-color: var(--auto-green) !important;
   color: var(--accent-green);
@@ -143,18 +230,16 @@ tr:nth-child(even) { background-color: var(--row-bg); }
 }
 
 .inherited-field {
-  opacity: 0.5;
+  color: var(--accent-green);
+  opacity: 0.6;
   font-style: italic;
 }
 
-td input:disabled, td select:disabled {
-  cursor: not-allowed;
-  -webkit-text-fill-color: var(--text-main) !important;
+.row-divider {
+  border-top: 3px solid var(--border-green) !important;
 }
 
-.row-divider { border-top: 3px solid var(--border-green) !important; }
-
-/* 6. Footer */
+/* Footer & Buttons */
 .footer-area {
   padding: 20px 40px;
   background-color: var(--row-bg);
