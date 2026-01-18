@@ -15,7 +15,6 @@ function App() {
     const saved = localStorage.getItem('tasks-data');
     return saved ? JSON.parse(saved) : Array(100).fill({ jobTitle: '', startTime: '', endTime: '', taskID: '', answer: '', timeSpent: '' });
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => localStorage.setItem('tasks-data', JSON.stringify(tasks)), [tasks]);
   useEffect(() => localStorage.setItem('global-data', JSON.stringify(globalData)), [globalData]);
@@ -42,22 +41,6 @@ function App() {
     setTasks(newTasks);
   };
 
-  const handleSubmit = async () => {
-    if (!globalData.agentName || !globalData.date) return alert("Select Agent and Date.");
-    const finalData = tasks.map((t, index) => {
-      const master = tasks[Math.floor(index / 10) * 10];
-      return { ...globalData, projectNo: Math.floor(index / 10) + 1, taskNo: (index % 10) + 1, ...master, taskID: t.taskID, answer: t.answer };
-    }).filter(t => t.taskID.trim() !== "" || t.answer !== "");
-
-    if (finalData.length === 0) return alert("No data.");
-    setIsSubmitting(true);
-    try {
-      const URL = "https://script.google.com/macros/s/AKfycbzz-LyLUrN5nm8Ow-bNYpvgnIlNkKvShjslLbcIwSObmjkGWutZYhvLixuO1p0aiUTh5A/exec";
-      await fetch(URL, { method: "POST", mode: "no-cors", body: JSON.stringify(finalData) });
-      alert("Success!");
-    } catch (e) { alert("Failed."); } finally { setIsSubmitting(false); }
-  };
-
   return (
     <div className="container" data-theme={theme}>
       <header className="header-section">
@@ -82,14 +65,8 @@ function App() {
         <table>
           <thead>
             <tr>
-              <th style={{width: '60px'}}>Proj</th>
-              <th style={{width: '60px'}}>Task</th>
-              <th style={{width: '200px'}}>Job Title</th>
-              <th>Task ID</th>
-              <th style={{width: '120px'}}>Start</th>
-              <th style={{width: '120px'}}>End</th>
-              <th style={{width: '60px'}}>Min</th>
-              <th style={{width: '100px'}}>Answer</th>
+              <th>Proj</th><th>Task</th><th>Job Title</th><th>Task ID</th>
+              <th>Start</th><th>End</th><th>Min</th><th>Answer</th>
             </tr>
           </thead>
           <tbody>
@@ -98,9 +75,9 @@ function App() {
               const master = tasks[Math.floor(index / 10) * 10];
               return (
                 <tr key={index} className={isFirst ? "row-divider" : ""}>
-                  <td className="auto-field">{Math.floor(index / 10) + 1}</td>
-                  <td className="auto-field">{(index % 10) + 1}</td>
-                  <td>
+                  <td className="auto-field" style={{width: '50px'}}>{Math.floor(index / 10) + 1}</td>
+                  <td className="auto-field" style={{width: '50px'}}>{(index % 10) + 1}</td>
+                  <td style={{width: '250px'}}>
                     <select value={isFirst ? task.jobTitle : master.jobTitle} disabled={!isFirst} 
                       onChange={(e) => handleTaskChange(index, 'jobTitle', e.target.value)}
                       className={!isFirst ? "inherited-field" : ""}>
@@ -109,12 +86,12 @@ function App() {
                     </select>
                   </td>
                   <td><input type="text" value={task.taskID} onChange={(e) => handleTaskChange(index, 'taskID', e.target.value)} /></td>
-                  <td><input type="time" value={isFirst ? task.startTime : master.startTime} disabled={!isFirst}
+                  <td style={{width: '130px'}}><input type="time" value={isFirst ? task.startTime : master.startTime} disabled={!isFirst}
                     onChange={(e) => handleTaskChange(index, 'startTime', e.target.value)} className={!isFirst ? "inherited-field" : ""} /></td>
-                  <td><input type="time" value={isFirst ? task.endTime : master.endTime} disabled={!isFirst}
+                  <td style={{width: '130px'}}><input type="time" value={isFirst ? task.endTime : master.endTime} disabled={!isFirst}
                     onChange={(e) => handleTaskChange(index, 'endTime', e.target.value)} className={!isFirst ? "inherited-field" : ""} /></td>
-                  <td className="auto-field">{master.timeSpent || '-'}</td>
-                  <td>
+                  <td className="auto-field" style={{width: '60px'}}>{master.timeSpent || '-'}</td>
+                  <td style={{width: '100px'}}>
                     <select value={task.answer} onChange={(e) => handleTaskChange(index, 'answer', e.target.value)}>
                       <option value="">-</option>
                       {ANSWERS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
@@ -129,7 +106,7 @@ function App() {
 
       <footer className="footer-area">
         <button className="clear-btn" onClick={() => setTasks(Array(100).fill({jobTitle:'',startTime:'',endTime:'',taskID:'',answer:'',timeSpent:''}))}>Clear Board</button>
-        <button className="submit-btn" onClick={handleSubmit} disabled={isSubmitting}>{isSubmitting ? "Uploading..." : "Submit All"}</button>
+        <button className="submit-btn">Submit All</button>
       </footer>
     </div>
   );
