@@ -76,11 +76,16 @@ function App() {
     const finalData = tasks.map((t, index) => {
       const master = tasks[Math.floor(index / 10) * 10];
       return {
-        agentName: globalData.agentName, date: globalData.date,
-        projectNo: Math.floor(index / 10) + 1, taskNo: (index % 10) + 1,
-        jobTitle: master.jobTitle, startTime: master.startTime,
-        endTime: master.endTime, timeSpent: master.timeSpent,
-        taskID: t.taskID, answer: t.answer
+        agentName: globalData.agentName,
+        date: globalData.date,
+        projectNo: Math.floor(index / 10) + 1,
+        taskNo: (index % 10) + 1,
+        jobTitle: master.jobTitle,
+        startTime: master.startTime,
+        endTime: master.endTime,
+        timeSpent: master.timeSpent,
+        taskID: t.taskID,
+        answer: t.answer
       };
     }).filter(t => t.taskID.trim() !== "" || t.answer !== "");
 

@@ -9,7 +9,8 @@
   --accent-green: #4ade80;
   --text-main: #e8f5e9;
   --auto-green: #1b3d2f;
-  --icon-color: invert(100%); /* White icons for dark bg */
+  --icon-bg: #ffffff;      /* White button background */
+  --icon-filter: invert(0%); /* Black icon inside white button */
 }
 
 /* Light Theme */
@@ -21,7 +22,8 @@
   --accent-green: #000000;
   --text-main: #1a1a1a;
   --auto-green: #e8e8e8;
-  --icon-color: invert(0%); /* Black icons for white bg */
+  --icon-bg: #000000;      /* Black button background */
+  --icon-filter: invert(100%); /* White icon inside black button */
 }
 
 /* Dark Mode */
@@ -33,7 +35,8 @@
   --accent-green: #9e9e9e;
   --text-main: #ffffff;
   --auto-green: #222222;
-  --icon-color: invert(100%); /* White icons */
+  --icon-bg: #ffffff;      /* White button background */
+  --icon-filter: invert(0%);
 }
 
 /* Cyber Theme */
@@ -45,7 +48,8 @@
   --accent-green: #ff79c6;
   --text-main: #f8f8f2;
   --auto-green: #240e42;
-  --icon-color: invert(100%); /* White icons */
+  --icon-bg: #ffffff;      /* White button background */
+  --icon-filter: invert(0%);
 }
 
 /* 1. Global Reset */
@@ -62,6 +66,7 @@ body, html {
   display: flex;
   flex-direction: column;
   background-color: var(--deep-bg);
+  transition: background-color 0.3s ease;
 }
 
 /* 2. Header Section */
@@ -85,40 +90,37 @@ h2 { color: var(--accent-green); margin: 0; font-weight: 700; }
   border-radius: 50%;
   border: 2px solid var(--text-main);
   cursor: pointer;
+  transition: transform 0.2s;
 }
 
+.theme-btn:hover { transform: scale(1.2); }
 .btn-light { background: #ffffff; }
 .btn-dark { background: #333333; }
 .btn-emerald { background: #4ade80; }
 .btn-cyber { background: #ff79c6; }
 
-/* 3. Input & Icon Controls (The Fix) */
-.global-inputs select, .global-inputs input,
-td input, td select {
+/* 3. Input Styling */
+.global-inputs select, .global-inputs input {
   background-color: var(--deep-bg);
   border: 1px solid var(--border-green);
-  color: var(--text-main) !important;
+  color: var(--text-main);
   padding: 8px;
   border-radius: 6px;
-  font-size: 14px;
 }
 
-/* Specifically force the calendar and clock icons to invert based on theme */
+/* 4. The Specific Button Fix for Date and Time */
 input[type="date"]::-webkit-calendar-picker-indicator,
 input[type="time"]::-webkit-calendar-picker-indicator {
-  filter: var(--icon-color) !important;
+  background-color: var(--icon-bg) !important;
+  filter: var(--icon-filter) !important;
   cursor: pointer;
+  border-radius: 4px;
+  padding: 4px;
   opacity: 1;
 }
 
-/* Prevent the browser from changing colors on focus */
-input:focus, select:focus {
-  outline: 2px solid var(--accent-green);
-  background-color: var(--deep-bg) !important;
-}
-
-/* 4. Table Styles */
-.table-container { flex-grow: 1; overflow: auto; background-color: var(--deep-bg); }
+/* 5. Table Styles */
+.table-container { flex-grow: 1; overflow: auto; }
 
 table { width: 100%; border-collapse: collapse; }
 
@@ -134,22 +136,32 @@ thead th {
 }
 
 tr:nth-child(even) { background-color: var(--row-bg); }
+tr:hover { background-color: rgba(128, 128, 128, 0.05); }
 
-td { border: 1px solid var(--border-green); height: 45px; }
+td { height: 45px; border: 1px solid var(--border-green); position: relative; }
 
 td input, td select {
   width: 100%; height: 100%;
-  background: transparent !important;
-  border: none !important;
-  border-radius: 0;
+  background: transparent;
+  color: var(--text-main) !important;
+  border: none;
+  padding: 0 10px;
+  box-sizing: border-box;
 }
 
-/* Disabled Row Logic */
-td input:disabled, td select:disabled {
-  opacity: 0.5;
+/* Dropdown styling */
+select, option {
+  background-color: var(--row-bg);
   color: var(--text-main) !important;
-  -webkit-text-fill-color: var(--text-main) !important;
+}
+
+/* Disabled row logic */
+td select:disabled, td input:disabled {
+  background-color: transparent !important;
+  color: var(--text-main) !important;
+  opacity: 0.5;
   cursor: not-allowed;
+  -webkit-text-fill-color: var(--text-main);
 }
 
 /* Specialized Fields */
