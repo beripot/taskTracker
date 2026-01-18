@@ -1,7 +1,8 @@
 /* --- THEME DEFINITIONS --- */
 
 /* Emerald Dark (Original) */
-[data-theme='emerald'], :root {
+[data-theme='emerald'],
+:root {
   --deep-bg: #0a1a12;
   --row-bg: #122d21;
   --header-bg: #1a4332;
@@ -17,7 +18,7 @@
   --row-bg: #f2f2f2;
   --header-bg: #e0e0e0;
   --border-green: #cccccc;
-  --accent-green: #000000; 
+  --accent-green: #000000;
   --text-main: #1a1a1a;
   --auto-green: #e8e8e8;
 }
@@ -45,8 +46,10 @@
 }
 
 /* 1. Global Reset */
-body, html {
-  margin: 0; padding: 0; 
+body,
+html {
+  margin: 0;
+  padding: 0;
   background-color: var(--deep-bg);
   color: var(--text-main);
   font-family: sans-serif;
@@ -73,7 +76,11 @@ body, html {
   box-sizing: border-box;
 }
 
-h2 { color: var(--accent-green); margin: 0; font-weight: 700; }
+h2 {
+  color: var(--accent-green);
+  margin: 0;
+  font-weight: 700;
+}
 
 /* Theme Controls */
 .theme-controls {
@@ -91,13 +98,28 @@ h2 { color: var(--accent-green); margin: 0; font-weight: 700; }
   transition: transform 0.2s;
 }
 
-.theme-btn:hover { transform: scale(1.2); }
-.btn-light { background: #ffffff; }
-.btn-dark { background: #333333; }
-.btn-emerald { background: #4ade80; }
-.btn-cyber { background: #ff79c6; }
+.theme-btn:hover {
+  transform: scale(1.2);
+}
 
-.global-inputs select, .global-inputs input {
+.btn-light {
+  background: #ffffff;
+}
+
+.btn-dark {
+  background: #333333;
+}
+
+.btn-emerald {
+  background: #4ade80;
+}
+
+.btn-cyber {
+  background: #ff79c6;
+}
+
+.global-inputs select,
+.global-inputs input {
   background-color: var(--deep-bg);
   border: 1px solid var(--border-green);
   color: var(--text-main);
@@ -127,8 +149,13 @@ thead th {
   border-bottom: 2px solid var(--border-green);
 }
 
-tr:nth-child(even) { background-color: var(--row-bg); }
-tr:hover { background-color: rgba(74, 222, 128, 0.05); }
+tr:nth-child(even) {
+  background-color: var(--row-bg);
+}
+
+tr:hover {
+  background-color: rgba(74, 222, 128, 0.05);
+}
 
 td {
   height: 45px;
@@ -136,8 +163,10 @@ td {
   position: relative;
 }
 
-td input, td select {
-  width: 100%; height: 100%;
+td input,
+td select {
+  width: 100%;
+  height: 100%;
   background: transparent;
   color: var(--text-main);
   border: none;
@@ -145,7 +174,32 @@ td input, td select {
   box-sizing: border-box;
 }
 
-td input:focus, td select:focus {
+/* Ensure the dropdown itself and the popup list use theme colors */
+select,
+option {
+  background-color: var(--row-bg);
+  /* The background of the list */
+  color: var(--text-main) !important;
+  /* Forces the text color to update */
+}
+
+/* Fix for Global Inputs (Agent name and Date) */
+.global-inputs select,
+.global-inputs input,
+.global-inputs option {
+  background-color: var(--deep-bg);
+  color: var(--text-main);
+}
+
+/* Chrome/Edge specific: prevents the browser from forcing a white background on autofill or focus */
+select:focus,
+input:focus {
+  background-color: var(--row-bg) !important;
+  color: var(--text-main) !important;
+}
+
+td input:focus,
+td select:focus {
   background-color: rgba(128, 128, 128, 0.1);
   outline: none;
 }
