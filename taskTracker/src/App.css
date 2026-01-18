@@ -7,8 +7,9 @@
   --accent-green: #4ade80;
   --text-main: #e8f5e9;
   --auto-green: #1b3d2f;
-  --btn-bg: #e8f5e9;      /* Light button on dark theme */
-  --btn-icon: invert(0);  /* Black icon */
+  /* Button is Neon Green, Icon is Black */
+  --btn-bg: #4ade80;      
+  --btn-icon: invert(0);  
 }
 
 [data-theme='light'] {
@@ -19,8 +20,9 @@
   --accent-green: #000000;
   --text-main: #1a1a1a;
   --auto-green: #e8e8e8;
-  --btn-bg: #1a1a1a;      /* Dark button on light theme */
-  --btn-icon: invert(1);  /* White icon */
+  /* Button is Black, Icon is White */
+  --btn-bg: #1a1a1a;      
+  --btn-icon: invert(1);  
 }
 
 [data-theme='dark'] {
@@ -31,7 +33,8 @@
   --accent-green: #9e9e9e;
   --text-main: #ffffff;
   --auto-green: #222222;
-  --btn-bg: #ffffff;
+  /* Button is Grey, Icon is Black */
+  --btn-bg: #9e9e9e;
   --btn-icon: invert(0);
 }
 
@@ -43,7 +46,8 @@
   --accent-green: #ff79c6;
   --text-main: #f8f8f2;
   --auto-green: #240e42;
-  --btn-bg: #f8f8f2;
+  /* Button is Neon Pink, Icon is Black */
+  --btn-bg: #ff79c6;
   --btn-icon: invert(0);
 }
 
@@ -53,7 +57,6 @@ body, html {
   background-color: var(--deep-bg);
   color: var(--text-main);
   font-family: sans-serif;
-  overflow-x: hidden;
 }
 
 .container {
@@ -85,7 +88,6 @@ body, html {
 .btn-emerald { background: #4ade80; }
 .btn-cyber { background: #ff79c6; }
 
-/* 3. Global Inputs Styling */
 .global-inputs { display: flex; gap: 10px; }
 .global-inputs select, .global-inputs input {
   background-color: var(--deep-bg);
@@ -95,7 +97,7 @@ body, html {
   border-radius: 6px;
 }
 
-/* 4. Table Layout Fixes */
+/* 3. Table Styling */
 .table-container { flex-grow: 1; overflow-y: auto; }
 table { width: 100%; border-collapse: collapse; table-layout: fixed; }
 
@@ -114,34 +116,35 @@ tr:nth-child(even) { background-color: var(--row-bg); }
 td { 
   height: 48px; 
   border: 1px solid var(--border-green); 
-  padding: 0; /* Important for alignment */
 }
 
-/* Center all content inside cells */
 td input, td select {
-  width: 100%; 
-  height: 100%;
+  width: 100%; height: 100%;
   background: transparent;
   color: var(--text-main) !important;
   border: none;
   padding: 0 10px;
-  display: flex;
-  align-items: center;
   box-sizing: border-box;
 }
 
-/* 5. The STUBBORN Button Fix */
+/* 4. The Themed Button Fix */
 input[type="date"]::-webkit-calendar-picker-indicator,
 input[type="time"]::-webkit-calendar-picker-indicator {
-  background-color: var(--btn-bg) !important;
-  filter: var(--btn-icon) !important;
-  border-radius: 3px;
-  padding: 3px;
+  background-color: var(--btn-bg) !important; /* Theme-specific color */
+  filter: var(--btn-icon) !important;        /* Correct icon contrast */
+  border-radius: 4px;
+  padding: 5px;
   cursor: pointer;
   margin-right: 5px;
+  transition: transform 0.1s ease;
 }
 
-/* Inherited/Disabled styling */
+input[type="date"]::-webkit-calendar-picker-indicator:hover,
+input[type="time"]::-webkit-calendar-picker-indicator:hover {
+  transform: scale(1.1);
+}
+
+/* 5. Logic Fields */
 .inherited-field { opacity: 0.5; font-style: italic; }
 td select:disabled, td input:disabled {
   cursor: not-allowed;
@@ -153,14 +156,11 @@ td select:disabled, td input:disabled {
   color: var(--accent-green);
   font-weight: bold;
   text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .row-divider { border-top: 3px solid var(--border-green) !important; }
 
-/* Footer */
+/* 6. Footer */
 .footer-area {
   padding: 20px 40px;
   background-color: var(--row-bg);
