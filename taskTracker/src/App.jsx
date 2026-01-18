@@ -76,7 +76,7 @@ function App() {
     <div className="container" data-theme={theme}>
       <div className="header-section">
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <h2>Efficiency Tracker</h2>
+          <h2>CMI - Bidding Task Tracker </h2>
           <div className="theme-controls">
             {['light', 'dark', 'emerald', 'cyber'].map(t => (
               <button key={t} className={`theme-btn btn-${t}`} onClick={() => setTheme(t)} title={t}></button>
