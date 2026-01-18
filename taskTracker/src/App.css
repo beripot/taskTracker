@@ -1,5 +1,6 @@
 /* --- THEME DEFINITIONS --- */
-[data-theme='emerald'], :root {
+[data-theme='emerald'],
+:root {
   --deep-bg: #0a1a12;
   --row-bg: #122d21;
   --header-bg: #1a4332;
@@ -13,13 +14,21 @@
 
 [data-theme='light'] {
   --deep-bg: #ffffff;
-  --row-bg: #f2f2f2;
-  --header-bg: #e0e0e0;
-  --border-green: #cccccc;
-  --accent-green: #000000;
+  /* Pure white background */
+  --row-bg: #ffffff;
+  /* Pure white rows */
+  --header-bg: #f8f8f8;
+  /* Very light grey for header */
+  --border-green: #e0e0e0;
+  /* Subtle grey borders */
+  --accent-green: #1a1a1a;
+  /* Black accents */
   --text-main: #1a1a1a;
-  --auto-green: #e8e8e8;
-  --btn-box-bg: #000000;
+  /* Black text */
+  --auto-green: #f2f2f2;
+  /* Light grey for auto-fields */
+  --btn-box-bg: #1a1a1a;
+  /* Black box for icons */
   --btn-icon-filter: invert(1);
 }
 
@@ -48,14 +57,14 @@
 }
 
 /* 1. Global Reset */
-body, html {
+body,
+html {
   margin: 0;
   padding: 0;
   background-color: var(--deep-bg);
   color: var(--text-main);
   font-family: sans-serif;
   width: 100%;
-  overflow-x: hidden;
 }
 
 .container {
@@ -73,25 +82,44 @@ body, html {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-sizing: border-box;
 }
 
-.theme-controls { display: flex; gap: 10px; }
+.theme-controls {
+  display: flex;
+  gap: 10px;
+}
+
 .theme-btn {
-  width: 20px; height: 20px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   border: 2px solid var(--text-main);
   cursor: pointer;
-  transition: transform 0.2s;
 }
-.theme-btn:hover { transform: scale(1.2); }
-.btn-light { background: #ffffff; }
-.btn-dark { background: #333333; }
-.btn-emerald { background: #4ade80; }
-.btn-cyber { background: #ff79c6; }
 
-.global-inputs { display: flex; gap: 10px; }
-.global-inputs select, .global-inputs input {
+.btn-light {
+  background: #ffffff;
+}
+
+.btn-dark {
+  background: #333333;
+}
+
+.btn-emerald {
+  background: #4ade80;
+}
+
+.btn-cyber {
+  background: #ff79c6;
+}
+
+.global-inputs {
+  display: flex;
+  gap: 10px;
+}
+
+.global-inputs select,
+.global-inputs input {
   background-color: var(--deep-bg);
   border: 1px solid var(--border-green);
   color: var(--text-main);
@@ -99,7 +127,7 @@ body, html {
   border-radius: 6px;
 }
 
-/* 3. Table Layout - The Fix for White Space & Shifting */
+/* 3. Table Layout - FIXED WIDTHS & NO RIGHT SPACE */
 .table-container {
   flex-grow: 1;
   overflow-y: auto;
@@ -110,7 +138,8 @@ body, html {
 table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed; /* Ensures columns stay put and stretch to fill */
+  table-layout: fixed;
+  /* Stops shifting and forces full width */
 }
 
 thead th {
@@ -123,7 +152,6 @@ thead th {
   z-index: 10;
   border-bottom: 2px solid var(--border-green);
   text-align: left;
-  white-space: nowrap;
 }
 
 td {
@@ -132,7 +160,8 @@ td {
   padding: 0;
 }
 
-td input, td select {
+td input,
+td select {
   width: 100%;
   height: 100%;
   background: transparent !important;
@@ -142,7 +171,7 @@ td input, td select {
   box-sizing: border-box;
 }
 
-/* 4. The Themed Button Wrapper */
+/* 4. Picker Indicators */
 input[type="date"]::-webkit-calendar-picker-indicator,
 input[type="time"]::-webkit-calendar-picker-indicator {
   background-color: var(--btn-box-bg) !important;
@@ -150,19 +179,34 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   border-radius: 4px;
   padding: 4px;
   cursor: pointer;
-  margin-right: 8px; /* Keeps it inside its own cell */
+  margin-right: 8px;
 }
 
-/* Specialized Logic */
-tr:nth-child(even) { background-color: var(--row-bg); }
+/* ROW LOGIC */
+tr {
+  background-color: var(--row-bg);
+}
+
+/* Subtly different color for even rows, but stays within theme */
+tr:nth-child(even) {
+  background-color: rgba(128, 128, 128, 0.03);
+}
+
 .auto-field {
   background-color: var(--auto-green) !important;
   color: var(--accent-green);
   font-weight: bold;
   text-align: center;
 }
-.inherited-field { opacity: 0.6; font-style: italic; }
-.row-divider { border-top: 3px solid var(--border-green) !important; }
+
+.inherited-field {
+  opacity: 0.6;
+  font-style: italic;
+}
+
+.row-divider {
+  border-top: 3px solid var(--border-green) !important;
+}
 
 /* Footer */
 .footer-area {
@@ -173,13 +217,17 @@ tr:nth-child(even) { background-color: var(--row-bg); }
   justify-content: flex-end;
   gap: 15px;
 }
+
 .submit-btn {
   background-color: var(--accent-green);
   color: var(--deep-bg);
   padding: 10px 25px;
-  border: none; border-radius: 6px;
-  font-weight: bold; cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
 }
+
 .clear-btn {
   background-color: transparent;
   color: #ff6b6b;
