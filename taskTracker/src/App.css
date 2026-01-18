@@ -1,11 +1,47 @@
-:root {
-  --deep-bg: #0a1a12;           /* Darkest Green for main BG */
-  --row-bg: #122d21;            /* Dark Emerald for rows */
-  --header-bg: #1a4332;         /* Forest Green for Header */
-  --border-green: #234d3b;      /* Muted Border Green */
-  --accent-green: #4ade80;      /* Vibrant Neon Green for text highlights */
-  --text-main: #e8f5e9;         /* Off-white/Mint text */
-  --auto-green: #1b3d2f;        /* Background for automated cells */
+/* --- THEME DEFINITIONS --- */
+
+/* Emerald Dark (Original) */
+[data-theme='emerald'], :root {
+  --deep-bg: #0a1a12;
+  --row-bg: #122d21;
+  --header-bg: #1a4332;
+  --border-green: #234d3b;
+  --accent-green: #4ade80;
+  --text-main: #e8f5e9;
+  --auto-green: #1b3d2f;
+}
+
+/* Light Theme (White/Black) */
+[data-theme='light'] {
+  --deep-bg: #ffffff;
+  --row-bg: #f2f2f2;
+  --header-bg: #e0e0e0;
+  --border-green: #cccccc;
+  --accent-green: #000000; 
+  --text-main: #1a1a1a;
+  --auto-green: #e8e8e8;
+}
+
+/* Dark Mode (Black/Grey) */
+[data-theme='dark'] {
+  --deep-bg: #000000;
+  --row-bg: #1a1a1a;
+  --header-bg: #262626;
+  --border-green: #333333;
+  --accent-green: #9e9e9e;
+  --text-main: #ffffff;
+  --auto-green: #222222;
+}
+
+/* Cyber Theme (Purple/Pink) */
+[data-theme='cyber'] {
+  --deep-bg: #1a0b2e;
+  --row-bg: #2d134d;
+  --header-bg: #3c1a69;
+  --border-green: #5a2a96;
+  --accent-green: #ff79c6;
+  --text-main: #f8f8f2;
+  --auto-green: #240e42;
 }
 
 /* 1. Global Reset */
@@ -13,7 +49,7 @@ body, html {
   margin: 0; padding: 0; 
   background-color: var(--deep-bg);
   color: var(--text-main);
-  overflow-x: hidden;
+  font-family: sans-serif;
 }
 
 .container {
@@ -22,9 +58,10 @@ body, html {
   display: flex;
   flex-direction: column;
   background-color: var(--deep-bg);
+  transition: background-color 0.3s ease;
 }
 
-/* 2. Header (Dark Green) */
+/* 2. Header Section */
 .header-section {
   width: 100%;
   padding: 15px 40px;
@@ -38,19 +75,40 @@ body, html {
 
 h2 { color: var(--accent-green); margin: 0; font-weight: 700; }
 
+/* Theme Controls */
+.theme-controls {
+  display: flex;
+  gap: 10px;
+  margin-left: 20px;
+}
+
+.theme-btn {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--text-main);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.theme-btn:hover { transform: scale(1.2); }
+.btn-light { background: #ffffff; }
+.btn-dark { background: #333333; }
+.btn-emerald { background: #4ade80; }
+.btn-cyber { background: #ff79c6; }
+
 .global-inputs select, .global-inputs input {
   background-color: var(--deep-bg);
   border: 1px solid var(--border-green);
   color: var(--text-main);
-  padding: 10px;
+  padding: 8px;
   border-radius: 6px;
 }
 
-/* 3. Table (Dark Mode) */
+/* 3. Table Styles */
 .table-container {
   flex-grow: 1;
   overflow: auto;
-  background-color: var(--deep-bg);
 }
 
 table {
@@ -61,68 +119,56 @@ table {
 thead th {
   background-color: var(--header-bg);
   color: var(--accent-green);
-  padding: 14px;
-  font-size: 11px;
+  padding: 12px;
+  font-size: 12px;
   position: sticky;
   top: 0;
   z-index: 10;
   border-bottom: 2px solid var(--border-green);
 }
 
-/* Zebra Striping */
 tr:nth-child(even) { background-color: var(--row-bg); }
-tr:nth-child(odd) { background-color: var(--deep-bg); }
-
-tr:hover { background-color: #1e4636; }
+tr:hover { background-color: rgba(74, 222, 128, 0.05); }
 
 td {
-  height: 48px;
+  height: 45px;
   border: 1px solid var(--border-green);
   position: relative;
 }
 
-/* 4. Input & Select Styles */
 td input, td select {
   width: 100%; height: 100%;
   background: transparent;
   color: var(--text-main);
   border: none;
-  padding: 0 12px;
+  padding: 0 10px;
   box-sizing: border-box;
-  font-family: inherit;
-  appearance: none;
 }
 
 td input:focus, td select:focus {
-  background-color: rgba(74, 222, 128, 0.1);
+  background-color: rgba(128, 128, 128, 0.1);
   outline: none;
-  box-shadow: inset 0 0 0 1px var(--accent-green);
 }
 
-/* Dark Auto-Fields */
+/* Specialized Fields */
 .auto-field {
   background-color: var(--auto-green) !important;
   color: var(--accent-green);
-  font-weight: 700;
+  font-weight: bold;
   text-align: center;
 }
 
 .inherited-field {
-  color: #4a6d5d;
+  color: var(--accent-green);
+  opacity: 0.6;
   font-style: italic;
 }
 
 .row-divider {
-  border-top: 3px solid var(--accent-green) !important;
+  border-top: 3px solid var(--border-green) !important;
 }
 
-/* 5. Icons & Buttons */
-input[type="date"]::-webkit-calendar-picker-indicator,
-input[type="time"]::-webkit-calendar-picker-indicator {
-  filter: invert(80%) sepia(30%) saturate(500%) hue-rotate(90deg); /* Bright Green Icons */
-  cursor: pointer;
-}
-
+/* Footer & Buttons */
 .footer-area {
   padding: 20px 40px;
   background-color: var(--row-bg);
@@ -134,11 +180,11 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 
 .submit-btn {
   background-color: var(--accent-green);
-  color: var(--deep-bg); /* Dark text on bright button */
-  padding: 12px 30px;
+  color: var(--deep-bg);
+  padding: 10px 25px;
   border: none;
   border-radius: 6px;
-  font-weight: 800;
+  font-weight: bold;
   cursor: pointer;
 }
 
@@ -146,45 +192,7 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   background-color: transparent;
   color: #ff6b6b;
   border: 1px solid #ff6b6b;
-  padding: 12px 25px;
+  padding: 10px 20px;
   border-radius: 6px;
   cursor: pointer;
-}
-
-/* 1. Style the Dropdown List (The part that pops out) */
-select option {
-  background-color: var(--row-bg); /* Dark emerald background */
-  color: var(--text-main);         /* Mint text */
-  padding: 10px;
-}
-
-/* 2. Fix for Chromium-based browsers (Chrome/Edge) to prevent white popups */
-select:focus {
-  background-color: var(--deep-bg);
-}
-
-/* 3. Style the Date & Time Picker internal UI (where supported) */
-input[type="date"]::-webkit-datetime-edit,
-input[type="date"]::-webkit-inner-spin-button,
-input[type="date"]::-webkit-clear-button,
-input[type="time"]::-webkit-datetime-edit,
-input[type="time"]::-webkit-inner-spin-button {
-  color: var(--text-main);
-}
-
-/* 4. Ensure the input fields themselves aren't white when active */
-td input, td select {
-  background-color: transparent !important;
-  color: var(--text-main);
-}
-
-/* 5. Customizing the dropdown arrow to look better on dark background */
-td:has(select)::after {
-  content: '▼';
-  font-size: 10px;
-  position: absolute;
-  right: 12px;
-  top: 18px;
-  color: var(--accent-green); /* Glowing green arrow */
-  pointer-events: none;
 }
