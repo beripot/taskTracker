@@ -73,25 +73,18 @@ function App() {
       alert("Select Agent and Date first.");
       return;
     }
-
     const finalData = tasks.map((t, index) => {
       const master = tasks[Math.floor(index / 10) * 10];
       return {
-        agentName: globalData.agentName,
-        date: globalData.date,
-        projectNo: Math.floor(index / 10) + 1,
-        taskNo: (index % 10) + 1,
-        jobTitle: master.jobTitle,
-        startTime: master.startTime,
-        endTime: master.endTime,
-        timeSpent: master.timeSpent,
-        taskID: t.taskID,
-        answer: t.answer
+        agentName: globalData.agentName, date: globalData.date,
+        projectNo: Math.floor(index / 10) + 1, taskNo: (index % 10) + 1,
+        jobTitle: master.jobTitle, startTime: master.startTime,
+        endTime: master.endTime, timeSpent: master.timeSpent,
+        taskID: t.taskID, answer: t.answer
       };
     }).filter(t => t.taskID.trim() !== "" || t.answer !== "");
 
     if (finalData.length === 0) return alert("No data to submit.");
-
     setIsSubmitting(true);
     try {
       const URL = "https://script.google.com/macros/s/AKfycbzz-LyLUrN5nm8Ow-bNYpvgnIlNkKvShjslLbcIwSObmjkGWutZYhvLixuO1p0aiUTh5A/exec";
