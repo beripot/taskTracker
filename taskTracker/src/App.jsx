@@ -99,7 +99,7 @@ function App() {
               <th style={{ width: '55px' }}>Proj</th>
               <th style={{ width: '55px' }}>Task</th>
               <th style={{ width: '280px' }}>Job Title</th>
-              <th>Task ID</th>
+              <th>Task ID</th> 
               <th style={{ width: '135px' }}>Start</th>
               <th style={{ width: '135px' }}>End</th>
               <th style={{ width: '70px' }}>Min</th>
