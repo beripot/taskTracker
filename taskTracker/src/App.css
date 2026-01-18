@@ -24,6 +24,11 @@
   --btn-icon-filter: invert(1);
 }
 
+/* Fix for the Header Title in Light Theme */
+[data-theme='light'] h2 {
+  color: #000000 !important;
+}
+
 [data-theme='dark'] {
   --deep-bg: #000000;
   --row-bg: #1a1a1a;
@@ -150,7 +155,7 @@ td select {
   box-sizing: border-box;
 }
 
-/* THE ULTIMATE FIX: Force dropdown options to be readable black text on light background always */
+/* LOCKED: Dropdown options always readable */
 select option {
   background-color: #ffffff !important;
   color: #000000 !important;
