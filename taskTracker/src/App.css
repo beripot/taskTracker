@@ -1,6 +1,4 @@
 /* --- THEME DEFINITIONS --- */
-
-/* Emerald Dark (Original) */
 [data-theme='emerald'],
 :root {
   --deep-bg: #0a1a12;
@@ -10,9 +8,12 @@
   --accent-green: #4ade80;
   --text-main: #e8f5e9;
   --auto-green: #1b3d2f;
+  --btn-box-bg: #4ade80;
+  /* Green box for icons */
+  --btn-icon-filter: invert(0);
+  /* Black icon */
 }
 
-/* Light Theme (White/Black) */
 [data-theme='light'] {
   --deep-bg: #ffffff;
   --row-bg: #f2f2f2;
@@ -21,9 +22,12 @@
   --accent-green: #000000;
   --text-main: #1a1a1a;
   --auto-green: #e8e8e8;
+  --btn-box-bg: #000000;
+  /* Black box for icons */
+  --btn-icon-filter: invert(1);
+  /* White icon */
 }
 
-/* Dark Mode (Black/Grey) */
 [data-theme='dark'] {
   --deep-bg: #000000;
   --row-bg: #1a1a1a;
@@ -32,9 +36,12 @@
   --accent-green: #9e9e9e;
   --text-main: #ffffff;
   --auto-green: #222222;
+  --btn-box-bg: #ffffff;
+  /* White box for icons */
+  --btn-icon-filter: invert(0);
+  /* Black icon */
 }
 
-/* Cyber Theme (Purple/Pink) */
 [data-theme='cyber'] {
   --deep-bg: #1a0b2e;
   --row-bg: #2d134d;
@@ -43,6 +50,10 @@
   --accent-green: #ff79c6;
   --text-main: #f8f8f2;
   --auto-green: #240e42;
+  --btn-box-bg: #ff79c6;
+  /* Pink box for icons */
+  --btn-icon-filter: invert(0);
+  /* Black icon */
 }
 
 /* 1. Global Reset */
@@ -57,36 +68,23 @@ html {
 
 .container {
   min-height: 100vh;
-  width: 100vw;
   display: flex;
   flex-direction: column;
-  background-color: var(--deep-bg);
-  transition: background-color 0.3s ease;
 }
 
-/* 2. Header Section */
+/* 2. Header */
 .header-section {
-  width: 100%;
   padding: 15px 40px;
   background-color: var(--row-bg);
   border-bottom: 2px solid var(--border-green);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-sizing: border-box;
 }
 
-h2 {
-  color: var(--accent-green);
-  margin: 0;
-  font-weight: 700;
-}
-
-/* Theme Controls */
 .theme-controls {
   display: flex;
   gap: 10px;
-  margin-left: 20px;
 }
 
 .theme-btn {
@@ -118,16 +116,7 @@ h2 {
   background: #ff79c6;
 }
 
-.global-inputs select,
-.global-inputs input {
-  background-color: var(--deep-bg);
-  border: 1px solid var(--border-green);
-  color: var(--text-main);
-  padding: 8px;
-  border-radius: 6px;
-}
-
-/* 3. Table Styles */
+/* 3. Table Layout */
 .table-container {
   flex-grow: 1;
   overflow: auto;
@@ -142,86 +131,48 @@ thead th {
   background-color: var(--header-bg);
   color: var(--accent-green);
   padding: 12px;
-  font-size: 12px;
+  font-size: 13px;
   position: sticky;
   top: 0;
   z-index: 10;
   border-bottom: 2px solid var(--border-green);
-}
-
-tr:nth-child(even) {
-  background-color: var(--row-bg);
-}
-
-tr:hover {
-  background-color: rgba(74, 222, 128, 0.05);
+  text-align: left;
 }
 
 td {
   height: 45px;
   border: 1px solid var(--border-green);
-  position: relative;
+  padding: 0;
 }
 
 td input,
 td select {
   width: 100%;
   height: 100%;
-  background: transparent;
-  color: var(--text-main);
-  border: none;
+  background: transparent !important;
+  color: var(--text-main) !important;
+  border: none !important;
   padding: 0 10px;
   box-sizing: border-box;
 }
 
-/* Target disabled selects (Job Title in rows 2-10) */
-td select:disabled {
-  background-color: transparent !important;
-  color: var(--text-main) !important;
-  opacity: 0.7;
-  /* Makes it look slightly different but still readable */
-  cursor: not-allowed;
-  -webkit-text-fill-color: var(--text-main);
-  /* Required for Safari/iOS */
+/* 4. The Themed Button Wrapper (The Fix) */
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  background-color: var(--btn-box-bg) !important;
+  filter: var(--btn-icon-filter) !important;
+  border-radius: 4px;
+  padding: 4px;
+  cursor: pointer;
+  /* Pulls icon away from the cell border to prevent skewing */
+  margin-right: 8px;
 }
 
-/* Ensure the dropdown arrow doesn't disappear in some themes */
-td select {
-  appearance: auto;
-  /* Restores the default arrow which adapts better to themes */
-}
-
-/* Ensure the dropdown itself and the popup list use theme colors */
-select,
-option {
+/* Specialized Logic */
+tr:nth-child(even) {
   background-color: var(--row-bg);
-  /* The background of the list */
-  color: var(--text-main) !important;
-  /* Forces the text color to update */
 }
 
-/* Fix for Global Inputs (Agent name and Date) */
-.global-inputs select,
-.global-inputs input,
-.global-inputs option {
-  background-color: var(--deep-bg);
-  color: var(--text-main);
-}
-
-/* Chrome/Edge specific: prevents the browser from forcing a white background on autofill or focus */
-select:focus,
-input:focus {
-  background-color: var(--row-bg) !important;
-  color: var(--text-main) !important;
-}
-
-td input:focus,
-td select:focus {
-  background-color: rgba(128, 128, 128, 0.1);
-  outline: none;
-}
-
-/* Specialized Fields */
 .auto-field {
   background-color: var(--auto-green) !important;
   color: var(--accent-green);
@@ -230,7 +181,6 @@ td select:focus {
 }
 
 .inherited-field {
-  color: var(--accent-green);
   opacity: 0.6;
   font-style: italic;
 }
@@ -239,7 +189,7 @@ td select:focus {
   border-top: 3px solid var(--border-green) !important;
 }
 
-/* Footer & Buttons */
+/* Footer */
 .footer-area {
   padding: 20px 40px;
   background-color: var(--row-bg);
