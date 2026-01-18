@@ -6,7 +6,6 @@ const JOBS = ["Bidding - Seller Appeal", "Inherit Traffic Daily QC", "Inherit Tr
 const ANSWERS = [{ label: "Yes", value: "Yes" }, { label: "No", value: "No" }];
 
 function App() {
-  // --- 1. INITIALIZE STATE FROM LOCALSTORAGE ---
   const [theme, setTheme] = useState(() => localStorage.getItem('app-theme') || 'emerald');
 
   const [globalData, setGlobalData] = useState(() => {
@@ -24,7 +23,6 @@ function App() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // --- 2. PERSIST DATA TO LOCALSTORAGE ON CHANGE ---
   useEffect(() => {
     localStorage.setItem('tasks-data', JSON.stringify(tasks));
   }, [tasks]);
@@ -66,8 +64,7 @@ function App() {
 
   const clearAll = () => {
     if (window.confirm("Clear all data?")) {
-      const emptyTasks = Array(100).fill({ jobTitle: '', startTime: '', endTime: '', taskID: '', answer: '', timeSpent: '' });
-      setTasks(emptyTasks);
+      setTasks(Array(100).fill({ jobTitle: '', startTime: '', endTime: '', taskID: '', answer: '', timeSpent: '' }));
     }
   };
 
@@ -99,9 +96,8 @@ function App() {
     try {
       const URL = "https://script.google.com/macros/s/AKfycbzz-LyLUrN5nm8Ow-bNYpvgnIlNkKvShjslLbcIwSObmjkGWutZYhvLixuO1p0aiUTh5A/exec";
       await fetch(URL, { method: "POST", mode: "no-cors", body: JSON.stringify(finalData) });
-      alert(`Success! ${finalData.length} tasks uploaded.`);
-      
-      if (window.confirm("Data saved! Clear board for next batch?")) {
+      alert(`Success! ${finalData.length} uploaded.`);
+      if (window.confirm("Clear board for next batch?")) {
         setTasks(Array(100).fill({ jobTitle: '', startTime: '', endTime: '', taskID: '', answer: '', timeSpent: '' }));
       }
     } catch (e) {
@@ -117,10 +113,10 @@ function App() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
           <h2>Efficiency Tracker</h2>
           <div className="theme-controls">
-            <button className="theme-btn btn-light" onClick={() => setTheme('light')} title="Light"></button>
-            <button className="theme-btn btn-dark" onClick={() => setTheme('dark')} title="Dark"></button>
-            <button className="theme-btn btn-emerald" onClick={() => setTheme('emerald')} title="Emerald"></button>
-            <button className="theme-btn btn-cyber" onClick={() => setTheme('cyber')} title="Cyber"></button>
+            <button className="theme-btn btn-light" onClick={() => setTheme('light')}></button>
+            <button className="theme-btn btn-dark" onClick={() => setTheme('dark')}></button>
+            <button className="theme-btn btn-emerald" onClick={() => setTheme('emerald')}></button>
+            <button className="theme-btn btn-cyber" onClick={() => setTheme('cyber')}></button>
           </div>
         </div>
         <div className="global-inputs">
@@ -157,9 +153,9 @@ function App() {
                     </select>
                   </td>
                   <td><input type="text" value={task.taskID} onChange={(e) => handleTaskChange(index, 'taskID', e.target.value)} placeholder="-" /></td>
-                  <td><input type="time" value={isFirst ? task.startTime : master.startTime} disabled={!isFirst} 
+                  <td><input type="time" value={isFirst ? task.startTime : master.startTime} disabled={!isFirst}
                     onChange={(e) => handleTaskChange(index, 'startTime', e.target.value)} className={!isFirst ? "inherited-field" : ""} /></td>
-                  <td><input type="time" value={isFirst ? task.endTime : master.endTime} disabled={!isFirst} 
+                  <td><input type="time" value={isFirst ? task.endTime : master.endTime} disabled={!isFirst}
                     onChange={(e) => handleTaskChange(index, 'endTime', e.target.value)} className={!isFirst ? "inherited-field" : ""} /></td>
                   <td className="auto-field">{master.timeSpent || '-'}</td>
                   <td>
