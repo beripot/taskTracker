@@ -1,6 +1,5 @@
 /* --- THEME DEFINITIONS --- */
-[data-theme='emerald'],
-:root {
+[data-theme='emerald'], :root {
   --deep-bg: #0a1a12;
   --row-bg: #122d21;
   --header-bg: #1a4332;
@@ -10,26 +9,20 @@
   --auto-green: #1b3d2f;
   --btn-box-bg: #4ade80;
   --btn-icon-filter: invert(0);
+  --zebra-bg: rgba(255, 255, 255, 0.03); /* Subtle light tint for dark themes */
 }
 
 [data-theme='light'] {
   --deep-bg: #ffffff;
-  /* Pure white background */
   --row-bg: #ffffff;
-  /* Pure white rows */
   --header-bg: #f8f8f8;
-  /* Very light grey for header */
   --border-green: #e0e0e0;
-  /* Subtle grey borders */
-  --accent-green: #1a1a1a;
-  /* Black accents */
+  --accent-green: #000000;
   --text-main: #1a1a1a;
-  /* Black text */
   --auto-green: #f2f2f2;
-  /* Light grey for auto-fields */
-  --btn-box-bg: #1a1a1a;
-  /* Black box for icons */
+  --btn-box-bg: #000000;
   --btn-icon-filter: invert(1);
+  --zebra-bg: #fdfdfd; /* Off-white for light theme - NO BLACK */
 }
 
 [data-theme='dark'] {
@@ -42,6 +35,7 @@
   --auto-green: #222222;
   --btn-box-bg: #ffffff;
   --btn-icon-filter: invert(0);
+  --zebra-bg: #222222; 
 }
 
 [data-theme='cyber'] {
@@ -54,13 +48,12 @@
   --auto-green: #240e42;
   --btn-box-bg: #ff79c6;
   --btn-icon-filter: invert(0);
+  --zebra-bg: rgba(0, 0, 0, 0.1);
 }
 
 /* 1. Global Reset */
-body,
-html {
-  margin: 0;
-  padding: 0;
+body, html {
+  margin: 0; padding: 0;
   background-color: var(--deep-bg);
   color: var(--text-main);
   font-family: sans-serif;
@@ -84,42 +77,20 @@ html {
   align-items: center;
 }
 
-.theme-controls {
-  display: flex;
-  gap: 10px;
-}
-
+.theme-controls { display: flex; gap: 10px; }
 .theme-btn {
-  width: 20px;
-  height: 20px;
+  width: 20px; height: 20px;
   border-radius: 50%;
   border: 2px solid var(--text-main);
   cursor: pointer;
 }
+.btn-light { background: #ffffff; }
+.btn-dark { background: #333333; }
+.btn-emerald { background: #4ade80; }
+.btn-cyber { background: #ff79c6; }
 
-.btn-light {
-  background: #ffffff;
-}
-
-.btn-dark {
-  background: #333333;
-}
-
-.btn-emerald {
-  background: #4ade80;
-}
-
-.btn-cyber {
-  background: #ff79c6;
-}
-
-.global-inputs {
-  display: flex;
-  gap: 10px;
-}
-
-.global-inputs select,
-.global-inputs input {
+.global-inputs { display: flex; gap: 10px; }
+.global-inputs select, .global-inputs input {
   background-color: var(--deep-bg);
   border: 1px solid var(--border-green);
   color: var(--text-main);
@@ -127,19 +98,18 @@ html {
   border-radius: 6px;
 }
 
-/* 3. Table Layout - FIXED WIDTHS & NO RIGHT SPACE */
-.table-container {
-  flex-grow: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  width: 100%;
+/* 3. Table Layout */
+.table-container { 
+  flex-grow: 1; 
+  overflow-y: auto; 
+  overflow-x: hidden; 
+  width: 100%; 
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-  /* Stops shifting and forces full width */
 }
 
 thead th {
@@ -148,8 +118,7 @@ thead th {
   padding: 12px;
   font-size: 13px;
   position: sticky;
-  top: 0;
-  z-index: 10;
+  top: 0; z-index: 10;
   border-bottom: 2px solid var(--border-green);
   text-align: left;
 }
@@ -160,10 +129,8 @@ td {
   padding: 0;
 }
 
-td input,
-td select {
-  width: 100%;
-  height: 100%;
+td input, td select {
+  width: 100%; height: 100%;
   background: transparent !important;
   color: var(--text-main) !important;
   border: none !important;
@@ -182,14 +149,13 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   margin-right: 8px;
 }
 
-/* ROW LOGIC */
+/* FIXED ROW LOGIC */
 tr {
   background-color: var(--row-bg);
 }
 
-/* Subtly different color for even rows, but stays within theme */
 tr:nth-child(even) {
-  background-color: rgba(128, 128, 128, 0.03);
+  background-color: var(--zebra-bg); /* This variable is white/off-white in light theme */
 }
 
 .auto-field {
@@ -199,14 +165,8 @@ tr:nth-child(even) {
   text-align: center;
 }
 
-.inherited-field {
-  opacity: 0.6;
-  font-style: italic;
-}
-
-.row-divider {
-  border-top: 3px solid var(--border-green) !important;
-}
+.inherited-field { opacity: 0.6; font-style: italic; }
+.row-divider { border-top: 3px solid var(--border-green) !important; }
 
 /* Footer */
 .footer-area {
@@ -222,10 +182,8 @@ tr:nth-child(even) {
   background-color: var(--accent-green);
   color: var(--deep-bg);
   padding: 10px 25px;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
+  border: none; border-radius: 6px;
+  font-weight: bold; cursor: pointer;
 }
 
 .clear-btn {

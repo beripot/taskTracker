@@ -99,7 +99,7 @@ function App() {
               <th style={{ width: '55px' }}>Proj</th>
               <th style={{ width: '55px' }}>Task</th>
               <th style={{ width: '280px' }}>Job Title</th>
-              <th>Task ID</th> {/* No width = Flexible to fill empty space */}
+              <th>Task ID</th>
               <th style={{ width: '135px' }}>Start</th>
               <th style={{ width: '135px' }}>End</th>
               <th style={{ width: '70px' }}>Min</th>
@@ -115,7 +115,7 @@ function App() {
                   <td className="auto-field">{Math.floor(index / 10) + 1}</td>
                   <td className="auto-field">{(index % 10) + 1}</td>
                   <td>
-                    <select value={isFirst ? task.jobTitle : master.jobTitle} disabled={!isFirst}
+                    <select value={isFirst ? task.jobTitle : master.jobTitle} disabled={!isFirst} 
                       onChange={(e) => handleTaskChange(index, 'jobTitle', e.target.value)}
                       className={!isFirst ? "inherited-field" : ""}>
                       <option value="">Select Job...</option>
@@ -141,7 +141,7 @@ function App() {
         </table>
       </div>
       <div className="footer-area">
-        <button className="clear-btn" onClick={() => { if (window.confirm("Are you sure you want to clear the board?")) setTasks(Array(100).fill({ jobTitle: '', startTime: '', endTime: '', taskID: '', answer: '', timeSpent: '' })) }} disabled={isSubmitting}>Clear Board</button>
+        <button className="clear-btn" onClick={() => { if(window.confirm("Clear board?")) setTasks(Array(100).fill({ jobTitle: '', startTime: '', endTime: '', taskID: '', answer: '', timeSpent: '' })) }} disabled={isSubmitting}>Clear Board</button>
         <button className="submit-btn" onClick={handleSubmit} disabled={isSubmitting}>
           {isSubmitting ? "Uploading..." : "Submit All"}
         </button>
