@@ -110,6 +110,39 @@ html {
   background: #ff79c6;
 }
 
+.global-inputs {
+  display: flex;
+  gap: 10px;
+}
+
+/* SHARED INPUT STYLING (Agent, Date, and Table) */
+.global-inputs select,
+.global-inputs input,
+td input,
+td select {
+  background-color: var(--deep-bg);
+  border: 1px solid var(--border-green);
+  color: var(--text-main) !important;
+  padding: 8px;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+/* Reset table-specific backgrounds so they don't double up borders */
+td input,
+td select {
+  border: none !important;
+  background: transparent !important;
+  width: 100%;
+  height: 100%;
+}
+
+/* LOCKED: Dropdown options always readable */
+select option {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
 /* 3. Table Layout */
 .table-container {
   flex-grow: 1;
@@ -141,24 +174,6 @@ td {
   border: 1px solid var(--border-green);
   padding: 0;
   background-color: var(--row-bg);
-}
-
-/* DROPDOWN & INPUT FORCING */
-td input,
-td select {
-  width: 100%;
-  height: 100%;
-  background: transparent !important;
-  color: var(--text-main) !important;
-  border: none !important;
-  padding: 0 10px;
-  box-sizing: border-box;
-}
-
-/* LOCKED: Dropdown options always readable */
-select option {
-  background-color: #ffffff !important;
-  color: #000000 !important;
 }
 
 /* 4. Picker Indicators */
