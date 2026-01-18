@@ -8,7 +8,7 @@ const ANSWERS = [{ label: "Yes", value: "Yes" }, { label: "No", value: "No" }];
 function App() {
   // --- 1. INITIALIZE STATE FROM LOCALSTORAGE ---
   const [theme, setTheme] = useState(() => localStorage.getItem('app-theme') || 'emerald');
-  
+
   const [globalData, setGlobalData] = useState(() => {
     const saved = localStorage.getItem('global-data');
     return saved ? JSON.parse(saved) : { agentName: '', date: '' };
@@ -103,9 +103,9 @@ function App() {
       const URL = "https://script.google.com/macros/s/AKfycbzz-LyLUrN5nm8Ow-bNYpvgnIlNkKvShjslLbcIwSObmjkGWutZYhvLixuO1p0aiUTh5A/exec";
       await fetch(URL, { method: "POST", mode: "no-cors", body: JSON.stringify(finalData) });
       alert(`Success! ${finalData.length} tasks uploaded.`);
-      
+
       // AUTO-CLEAR AFTER SUCCESS (Highly Recommended)
-      if(window.confirm("Data saved! Do you want to clear the board for the next batch?")) {
+      if (window.confirm("Data saved! Do you want to clear the board for the next batch?")) {
         setTasks(Array(100).fill({ jobTitle: '', startTime: '', endTime: '', taskID: '', answer: '', timeSpent: '' }));
       }
     } catch (e) {
@@ -153,17 +153,20 @@ function App() {
                   <td className="auto-field">{Math.floor(index / 10) + 1}</td>
                   <td className="auto-field">{(index % 10) + 1}</td>
                   <td>
-                    <select value={isFirst ? task.jobTitle : master.jobTitle} disabled={!isFirst} 
+                    <select
+                      value={isFirst ? task.jobTitle : master.jobTitle}
+                      disabled={!isFirst}
                       onChange={(e) => handleTaskChange(index, 'jobTitle', e.target.value)}
-                      className={!isFirst ? "inherited-field" : ""}>
+                      className={!isFirst ? "inherited-field" : ""}
+                    >
                       <option value="">Select Job...</option>
                       {JOBS.map(j => <option key={j} value={j}>{j}</option>)}
                     </select>
                   </td>
                   <td><input type="text" value={task.taskID} onChange={(e) => handleTaskChange(index, 'taskID', e.target.value)} placeholder="-" /></td>
-                  <td><input type="time" value={isFirst ? task.startTime : master.startTime} disabled={!isFirst} 
+                  <td><input type="time" value={isFirst ? task.startTime : master.startTime} disabled={!isFirst}
                     onChange={(e) => handleTaskChange(index, 'startTime', e.target.value)} className={!isFirst ? "inherited-field" : ""} /></td>
-                  <td><input type="time" value={isFirst ? task.endTime : master.endTime} disabled={!isFirst} 
+                  <td><input type="time" value={isFirst ? task.endTime : master.endTime} disabled={!isFirst}
                     onChange={(e) => handleTaskChange(index, 'endTime', e.target.value)} className={!isFirst ? "inherited-field" : ""} /></td>
                   <td className="auto-field">{master.timeSpent || '-'}</td>
                   <td>
