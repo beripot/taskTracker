@@ -1,6 +1,5 @@
 /* --- THEME DEFINITIONS --- */
-[data-theme='emerald'],
-:root {
+[data-theme='emerald'], :root {
   --deep-bg: #0a1a12;
   --row-bg: #122d21;
   --header-bg: #1a4332;
@@ -9,9 +8,7 @@
   --text-main: #e8f5e9;
   --auto-green: #1b3d2f;
   --btn-box-bg: #4ade80;
-  /* Green box for icons */
   --btn-icon-filter: invert(0);
-  /* Black icon */
 }
 
 [data-theme='light'] {
@@ -23,9 +20,7 @@
   --text-main: #1a1a1a;
   --auto-green: #e8e8e8;
   --btn-box-bg: #000000;
-  /* Black box for icons */
   --btn-icon-filter: invert(1);
-  /* White icon */
 }
 
 [data-theme='dark'] {
@@ -37,9 +32,7 @@
   --text-main: #ffffff;
   --auto-green: #222222;
   --btn-box-bg: #ffffff;
-  /* White box for icons */
   --btn-icon-filter: invert(0);
-  /* Black icon */
 }
 
 [data-theme='cyber'] {
@@ -51,16 +44,12 @@
   --text-main: #f8f8f2;
   --auto-green: #240e42;
   --btn-box-bg: #ff79c6;
-  /* Pink box for icons */
   --btn-icon-filter: invert(0);
-  /* Black icon */
 }
 
 /* 1. Global Reset */
-body,
-html {
-  margin: 0;
-  padding: 0;
+body, html {
+  margin: 0; padding: 0;
   background-color: var(--deep-bg);
   color: var(--text-main);
   font-family: sans-serif;
@@ -82,49 +71,27 @@ html {
   align-items: center;
 }
 
-.theme-controls {
-  display: flex;
-  gap: 10px;
-}
-
+.theme-controls { display: flex; gap: 10px; }
 .theme-btn {
-  width: 20px;
-  height: 20px;
+  width: 20px; height: 20px;
   border-radius: 50%;
   border: 2px solid var(--text-main);
   cursor: pointer;
   transition: transform 0.2s;
 }
+.theme-btn:hover { transform: scale(1.2); }
+.btn-light { background: #ffffff; }
+.btn-dark { background: #333333; }
+.btn-emerald { background: #4ade80; }
+.btn-cyber { background: #ff79c6; }
 
-.theme-btn:hover {
-  transform: scale(1.2);
-}
+/* 3. Table Layout (FIXED TO PREVENT SHIFTING) */
+.table-container { flex-grow: 1; overflow: auto; }
 
-.btn-light {
-  background: #ffffff;
-}
-
-.btn-dark {
-  background: #333333;
-}
-
-.btn-emerald {
-  background: #4ade80;
-}
-
-.btn-cyber {
-  background: #ff79c6;
-}
-
-/* 3. Table Layout */
-.table-container {
-  flex-grow: 1;
-  overflow: auto;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
+table { 
+  width: 100%; 
+  border-collapse: collapse; 
+  table-layout: fixed; /* CRITICAL: Stops shifting on refresh */
 }
 
 thead th {
@@ -133,22 +100,23 @@ thead th {
   padding: 12px;
   font-size: 13px;
   position: sticky;
-  top: 0;
-  z-index: 10;
+  top: 0; z-index: 10;
   border-bottom: 2px solid var(--border-green);
   text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 td {
   height: 45px;
   border: 1px solid var(--border-green);
   padding: 0;
+  overflow: hidden; /* Prevents cell expansion */
 }
 
-td input,
-td select {
-  width: 100%;
-  height: 100%;
+td input, td select {
+  width: 100%; height: 100%;
   background: transparent !important;
   color: var(--text-main) !important;
   border: none !important;
@@ -156,7 +124,7 @@ td select {
   box-sizing: border-box;
 }
 
-/* 4. The Themed Button Wrapper (The Fix) */
+/* 4. The Themed Button Wrapper */
 input[type="date"]::-webkit-calendar-picker-indicator,
 input[type="time"]::-webkit-calendar-picker-indicator {
   background-color: var(--btn-box-bg) !important;
@@ -164,30 +132,19 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   border-radius: 4px;
   padding: 4px;
   cursor: pointer;
-  /* Pulls icon away from the cell border to prevent skewing */
-  margin-right: 8px;
+  margin-right: 8px; /* Stops overlapping into next column */
 }
 
 /* Specialized Logic */
-tr:nth-child(even) {
-  background-color: var(--row-bg);
-}
-
+tr:nth-child(even) { background-color: var(--row-bg); }
 .auto-field {
   background-color: var(--auto-green) !important;
   color: var(--accent-green);
   font-weight: bold;
   text-align: center;
 }
-
-.inherited-field {
-  opacity: 0.6;
-  font-style: italic;
-}
-
-.row-divider {
-  border-top: 3px solid var(--border-green) !important;
-}
+.inherited-field { opacity: 0.6; font-style: italic; }
+.row-divider { border-top: 3px solid var(--border-green) !important; }
 
 /* Footer */
 .footer-area {
@@ -198,17 +155,13 @@ tr:nth-child(even) {
   justify-content: flex-end;
   gap: 15px;
 }
-
 .submit-btn {
   background-color: var(--accent-green);
   color: var(--deep-bg);
   padding: 10px 25px;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
+  border: none; border-radius: 6px;
+  font-weight: bold; cursor: pointer;
 }
-
 .clear-btn {
   background-color: transparent;
   color: #ff6b6b;

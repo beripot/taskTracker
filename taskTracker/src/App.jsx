@@ -96,12 +96,12 @@ function App() {
         <table>
           <thead>
             <tr>
-              <th style={{ width: '60px' }}>Proj</th>
-              <th style={{ width: '60px' }}>Task</th>
-              <th style={{ width: '250px' }}>Job Title</th>
+              <th style={{ width: '55px' }}>Proj</th>
+              <th style={{ width: '55px' }}>Task</th>
+              <th style={{ width: '260px' }}>Job Title</th>
               <th>Task ID</th>
-              <th style={{ width: '130px' }}>Start</th>
-              <th style={{ width: '130px' }}>End</th>
+              <th style={{ width: '135px' }}>Start</th>
+              <th style={{ width: '135px' }}>End</th>
               <th style={{ width: '70px' }}>Min</th>
               <th style={{ width: '110px' }}>Answer</th>
             </tr>
@@ -115,7 +115,7 @@ function App() {
                   <td className="auto-field">{Math.floor(index / 10) + 1}</td>
                   <td className="auto-field">{(index % 10) + 1}</td>
                   <td>
-                    <select value={isFirst ? task.jobTitle : master.jobTitle} disabled={!isFirst}
+                    <select value={isFirst ? task.jobTitle : master.jobTitle} disabled={!isFirst} 
                       onChange={(e) => handleTaskChange(index, 'jobTitle', e.target.value)}
                       className={!isFirst ? "inherited-field" : ""}>
                       <option value="">Select Job...</option>
