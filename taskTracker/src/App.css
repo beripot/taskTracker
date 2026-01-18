@@ -10,7 +10,7 @@
   --accent-green: #4ade80;
   --text-main: #e8f5e9;
   --auto-green: #1b3d2f;
-  --icon-color: invert(0);
+  --icon-color: invert(0%);
   /* White icons for dark bg */
 }
 
@@ -36,7 +36,7 @@
   --accent-green: #9e9e9e;
   --text-main: #ffffff;
   --auto-green: #222222;
-  --icon-color: invert(0);
+  --icon-color: invert(0%);
 }
 
 /* Cyber Theme */
@@ -48,7 +48,7 @@
   --accent-green: #ff79c6;
   --text-main: #f8f8f2;
   --auto-green: #240e42;
-  --icon-color: invert(0);
+  --icon-color: invert(0%);
 }
 
 /* 1. Global Reset */
