@@ -13,7 +13,7 @@
 
 [data-theme='light'] {
   --deep-bg: #ffffff;
-  --row-bg: #ffffff;       /* FIXED: All rows are now pure white */
+  --row-bg: #ffffff;
   --header-bg: #f2f2f2;
   --border-green: #dddddd;
   --accent-green: #000000;
@@ -85,16 +85,7 @@ body, html {
 .btn-emerald { background: #4ade80; }
 .btn-cyber { background: #ff79c6; }
 
-.global-inputs { display: flex; gap: 10px; }
-.global-inputs select, .global-inputs input {
-  background-color: var(--deep-bg);
-  border: 1px solid var(--border-green);
-  color: var(--text-main);
-  padding: 8px;
-  border-radius: 6px;
-}
-
-/* 3. Table Layout - FIXED FULL WIDTH */
+/* 3. Table Layout - NO RIGHT WHITE SPACE */
 .table-container { 
   flex-grow: 1; 
   overflow-y: auto; 
@@ -123,7 +114,7 @@ td {
   height: 45px;
   border: 1px solid var(--border-green);
   padding: 0;
-  background-color: var(--row-bg); /* Every cell follows the theme bg */
+  background-color: var(--row-bg);
 }
 
 td input, td select {
@@ -133,6 +124,16 @@ td input, td select {
   border: none !important;
   padding: 0 10px;
   box-sizing: border-box;
+}
+
+/* DROPDOWN TEXT FIX - Ensuring visibility of options */
+option {
+  background-color: var(--row-bg);
+  color: var(--text-main);
+}
+
+[data-theme='light'] option {
+  color: #000000 !important; /* Force black text in light theme dropdowns */
 }
 
 /* 4. Picker Indicators */
@@ -146,7 +147,6 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   margin-right: 8px;
 }
 
-/* SPECIAL FIELDS */
 .auto-field {
   background-color: var(--auto-green) !important;
   color: var(--accent-green);

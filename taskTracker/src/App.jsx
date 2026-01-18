@@ -66,7 +66,7 @@ function App() {
       const URL = "https://script.google.com/macros/s/AKfycbzz-LyLUrN5nm8Ow-bNYpvgnIlNkKvShjslLbcIwSObmjkGWutZYhvLixuO1p0aiUTh5A/exec";
       await fetch(URL, { method: "POST", mode: "no-cors", body: JSON.stringify(finalData) });
       alert(`Success! ${finalData.length} uploaded.`);
-      if (window.confirm("Clear board for next batch?")) {
+      if (window.confirm("Clear board?")) {
         setTasks(Array(100).fill({ jobTitle: '', startTime: '', endTime: '', taskID: '', answer: '', timeSpent: '' }));
       }
     } catch (e) { alert("Submission failed."); } finally { setIsSubmitting(false); }
@@ -99,7 +99,7 @@ function App() {
               <th style={{ width: '55px' }}>Proj</th>
               <th style={{ width: '55px' }}>Task</th>
               <th style={{ width: '280px' }}>Job Title</th>
-              <th>Task ID</th> 
+              <th>Task ID</th>
               <th style={{ width: '135px' }}>Start</th>
               <th style={{ width: '135px' }}>End</th>
               <th style={{ width: '70px' }}>Min</th>
