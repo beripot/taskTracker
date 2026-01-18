@@ -1,40 +1,42 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 
-const AGENTS = [
-  "Mcquinley Josh Maglangit",
-  "Phillip John Mamac",
-  "Nahre Fuentes",
-  "Ark Von Ryan Guillema",
-  "Angel Pink Librada"
-];
-
-const JOBS = [
-  "Bidding - Seller Appeal", 
-  "Inherit Traffic Daily QC", 
-  "Inherit Traffic High Imp",
-  "Bidding - Winner Pool QC", 
-  "Bidding - Winner Pool QC 1/6", 
-  "Bidding - Winner Pool QC 2/6",
-  "Bidding - Winner Pool QC 3/6",
-  "Bidding - Winner Pool QC 4/6",
-  "Bidding - Winner Pool QC 5/6",
-  "Bidding - Winner Pool QC 6/6",
-];
-
-const ANSWERS = [
-  { label: "Yes", value: "Yes" },
-  { label: "No", value: "No" }
-];
+const AGENTS = ["Mcquinley Josh Maglangit", "Phillip John Mamac", "Nahre Fuentes", "Ark Von Ryan Guillema", "Angel Pink Librada"];
+const JOBS = ["Bidding - Seller Appeal", "Inherit Traffic Daily QC", "Inherit Traffic High Imp", "Bidding - Winner Pool QC", "Bidding - Winner Pool QC 1/6", "Bidding - Winner Pool QC 2/6", "Bidding - Winner Pool QC 3/6", "Bidding - Winner Pool QC 4/6", "Bidding - Winner Pool QC 5/6", "Bidding - Winner Pool QC 6/6"];
+const ANSWERS = [{ label: "Yes", value: "Yes" }, { label: "No", value: "No" }];
 
 function App() {
-  const [theme, setTheme] = useState('emerald');
+  // --- 1. INITIALIZE STATE FROM LOCALSTORAGE ---
+  const [theme, setTheme] = useState(() => localStorage.getItem('app-theme') || 'emerald');
+  
+  const [globalData, setGlobalData] = useState(() => {
+    const saved = localStorage.getItem('global-data');
+    return saved ? JSON.parse(saved) : { agentName: '', date: '' };
+  });
+
+  const [tasks, setTasks] = useState(() => {
+    const saved = localStorage.getItem('tasks-data');
+    return saved ? JSON.parse(saved) : Array(100).fill({
+      jobTitle: '', startTime: '', endTime: '',
+      taskID: '', answer: '', timeSpent: ''
+    });
+  });
+
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [globalData, setGlobalData] = useState({ agentName: '', date: '' });
-  const [tasks, setTasks] = useState(Array(100).fill({
-    jobTitle: '', startTime: '', endTime: '',
-    taskID: '', answer: '', timeSpent: ''
-  }));
+
+  // --- 2. PERSIST DATA TO LOCALSTORAGE ON CHANGE ---
+  useEffect(() => {
+    localStorage.setItem('tasks-data', JSON.stringify(tasks));
+  }, [tasks]);
+
+  useEffect(() => {
+    localStorage.setItem('global-data', JSON.stringify(globalData));
+  }, [globalData]);
+
+  useEffect(() => {
+    localStorage.setItem('app-theme', theme);
+  }, [theme]);
+
 
   const handleGlobalChange = (field, value) => {
     setGlobalData(prev => ({ ...prev, [field]: value }));
@@ -44,25 +46,19 @@ function App() {
     const newTasks = [...tasks];
     let updatedTask = { ...newTasks[index], [field]: value };
 
-    if (field === 'startTime') {
-      if (value) {
-        const [h, m] = value.split(':').map(Number);
-        let endM = m + 25;
-        let endH = (h + Math.floor(endM / 60)) % 24;
-        const formattedEnd = `${String(endH).padStart(2, '0')}:${String(endM % 60).padStart(2, '0')}`;
-        updatedTask.endTime = formattedEnd;
-        updatedTask.timeSpent = 25;
-      }
+    if (field === 'startTime' && value) {
+      const [h, m] = value.split(':').map(Number);
+      let endM = m + 25;
+      let endH = (h + Math.floor(endM / 60)) % 24;
+      updatedTask.endTime = `${String(endH).padStart(2, '0')}:${String(endM % 60).padStart(2, '0')}`;
+      updatedTask.timeSpent = 25;
     }
 
-    if (field === 'endTime') {
-      const start = updatedTask.startTime;
-      if (start && value) {
-        const [sH, sM] = start.split(':').map(Number);
-        const [eH, eM] = value.split(':').map(Number);
-        const diff = (eH * 60 + eM) - (sH * 60 + sM);
-        updatedTask.timeSpent = diff < 0 ? diff + 1440 : diff;
-      }
+    if (field === 'endTime' && updatedTask.startTime && value) {
+      const [sH, sM] = updatedTask.startTime.split(':').map(Number);
+      const [eH, eM] = value.split(':').map(Number);
+      const diff = (eH * 60 + eM) - (sH * 60 + sM);
+      updatedTask.timeSpent = diff < 0 ? diff + 1440 : diff;
     }
 
     newTasks[index] = updatedTask;
@@ -70,8 +66,11 @@ function App() {
   };
 
   const clearAll = () => {
-    if (window.confirm("Clear all data?")) {
-      setTasks(Array(100).fill({ jobTitle: '', startTime: '', endTime: '', taskID: '', answer: '', timeSpent: '' }));
+    if (window.confirm("Clear all data? This will also wipe the browser's memory for this session.")) {
+      const emptyTasks = Array(100).fill({ jobTitle: '', startTime: '', endTime: '', taskID: '', answer: '', timeSpent: '' });
+      setTasks(emptyTasks);
+      // Optional: Clear global data too
+      // setGlobalData({ agentName: '', date: '' });
     }
   };
 
@@ -104,8 +103,13 @@ function App() {
       const URL = "https://script.google.com/macros/s/AKfycbzz-LyLUrN5nm8Ow-bNYpvgnIlNkKvShjslLbcIwSObmjkGWutZYhvLixuO1p0aiUTh5A/exec";
       await fetch(URL, { method: "POST", mode: "no-cors", body: JSON.stringify(finalData) });
       alert(`Success! ${finalData.length} tasks uploaded.`);
+      
+      // AUTO-CLEAR AFTER SUCCESS (Highly Recommended)
+      if(window.confirm("Data saved! Do you want to clear the board for the next batch?")) {
+        setTasks(Array(100).fill({ jobTitle: '', startTime: '', endTime: '', taskID: '', answer: '', timeSpent: '' }));
+      }
     } catch (e) {
-      alert("Submission failed.");
+      alert("Submission failed. Please check your internet.");
     } finally {
       setIsSubmitting(false);
     }
@@ -128,7 +132,7 @@ function App() {
             <option value="">Select Agent...</option>
             {AGENTS.map(a => <option key={a} value={a}>{a}</option>)}
           </select>
-          <input type="date" onChange={(e) => handleGlobalChange('date', e.target.value)} />
+          <input type="date" value={globalData.date} onChange={(e) => handleGlobalChange('date', e.target.value)} />
         </div>
       </div>
 
