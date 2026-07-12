@@ -17,7 +17,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 // *** PASTE YOUR DEPLOYED APPS SCRIPT URL HERE ***
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzWWGqVOJsnN2eLIqjefxh8c1lWLQLao8S5_kunu6cYMZnY31U8-9fexmnV5yy-MCUd/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwKoYk52cNd3AQooRgxgCAv5eXmc-aP9mDSuItlRTiEAUYfhV9jy5DdZLoQR2X0vheQJQ/exec';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
