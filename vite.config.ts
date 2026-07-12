@@ -8,7 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default defineConfig({
-  base: "/shopee-task-tracker/",   // ← must match your repo name
+  base: "/taskTracker/",   // ← must match your repo name
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
