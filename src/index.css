@@ -1,0 +1,175 @@
+@import "tailwindcss";
+
+@theme {
+  --color-shopee: #EE4D2D;
+  --color-shopee-dark: #D73211;
+  --color-shopee-light: #FFF0ED;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.9); opacity: 1; }
+  80%, 100% { transform: scale(2); opacity: 0; }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+  20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.7s ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.4s ease-out forwards;
+}
+
+.animate-slide-down {
+  animation: slideDown 0.4s ease-out forwards;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2.5s infinite;
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes gearSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes gearSpinReverse {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+.gear-spin {
+  animation: gearSpin 12s linear infinite;
+}
+
+.gear-spin-reverse {
+  animation: gearSpinReverse 16s linear infinite;
+}
+
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+
+/* Glass morphism */
+.glass {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.glass-dark {
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Zebra stripe background — realistic organic stripes */
+.zebra-bg {
+  position: relative;
+}
+
+.zebra-bg::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='900' viewBox='0 0 800 900'%3E%3Cg fill='none' stroke='%23000' stroke-linecap='round'%3E%3Cpath d='M60 -20 C55 30, 40 70, 65 130 C90 190, 50 220, 45 280 C40 340, 75 380, 70 440 C65 500, 40 530, 55 590 C70 650, 45 700, 50 760 C55 820, 65 860, 60 920' stroke-width='18'/%3E%3Cpath d='M140 -30 C160 25, 175 80, 150 140 C125 200, 155 250, 165 310 C175 370, 140 410, 135 470 C130 530, 160 580, 155 640 C150 700, 170 740, 160 800 C150 860, 145 890, 150 930' stroke-width='14'/%3E%3Cpath d='M230 -10 C220 50, 250 100, 245 160 C240 220, 210 270, 225 330 C240 390, 260 430, 250 490 C240 550, 215 590, 230 650 C245 710, 255 750, 240 810 C225 870, 235 900, 230 940' stroke-width='20'/%3E%3Cpath d='M330 -25 C345 35, 320 85, 335 145 C350 205, 340 250, 325 310 C310 370, 345 420, 350 480 C355 540, 330 580, 320 640 C310 700, 340 750, 345 810 C350 870, 335 900, 330 940' stroke-width='12'/%3E%3Cpath d='M420 -15 C410 45, 435 95, 440 155 C445 215, 415 265, 410 325 C405 385, 440 435, 445 495 C450 555, 420 590, 415 650 C410 710, 435 760, 440 820 C445 880, 425 910, 420 940' stroke-width='22'/%3E%3Cpath d='M520 -20 C535 40, 510 90, 505 150 C500 210, 530 260, 540 320 C550 380, 515 420, 510 480 C505 540, 535 590, 530 650 C525 710, 540 755, 535 815 C530 875, 520 905, 525 940' stroke-width='15'/%3E%3Cpath d='M610 -30 C600 30, 625 80, 630 140 C635 200, 605 250, 600 310 C595 370, 630 430, 635 490 C640 550, 610 590, 605 650 C600 710, 625 755, 630 815 C635 875, 615 900, 610 940' stroke-width='19'/%3E%3Cpath d='M710 -10 C720 50, 700 95, 695 155 C690 215, 720 265, 725 325 C730 385, 700 430, 695 490 C690 550, 715 595, 720 655 C725 715, 705 755, 700 815 C695 875, 715 905, 710 940' stroke-width='13'/%3E%3Cpath d='M185 -40 C195 15, 180 60, 190 120 C200 180, 185 230, 178 290 C171 350, 195 400, 200 460 C205 520, 180 565, 185 625 C190 685, 200 730, 192 790 C184 850, 190 890, 185 940' stroke-width='8'/%3E%3Cpath d='M470 -35 C460 20, 480 75, 485 135 C490 195, 465 240, 460 300 C455 360, 480 415, 485 475 C490 535, 465 575, 460 635 C455 695, 478 740, 482 800 C486 860, 472 895, 470 940' stroke-width='9'/%3E%3Cpath d='M760 -20 C770 35, 755 80, 750 140 C745 200, 765 255, 770 315 C775 375, 752 420, 748 480 C744 540, 765 585, 768 645 C771 705, 755 750, 752 810 C749 870, 762 905, 760 940' stroke-width='7'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 800px 900px;
+  background-repeat: repeat;
+}
+
+.zebra-bg::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 0%, transparent 30%, rgba(255,255,255,0.7) 70%, white 100%),
+              radial-gradient(ellipse at 0% 50%, white 0%, transparent 50%),
+              radial-gradient(ellipse at 100% 50%, white 0%, transparent 50%);
+}
+
+.zebra-bg > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
