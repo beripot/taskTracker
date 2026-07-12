@@ -65,13 +65,18 @@ export default function App() {
     setIsLoading(true);
     setAuthState('validating');
 
+    const displayNames: Record<string, string> = {
+      'zbragt937@shopeemobile-external.com': 'Mcquinley Josh Maglangit',
+      'zbragt992@shopeemobile-external.com': 'Angel Pink Librada',
+      'zbragt940@shopeemobile-external.com': 'Nahre Fuentes',
+      'zbragt952@shopeemobile-external.com': 'Phillip John Mamac',
+    };
     setTimeout(() => {
       if (ALLOWED_EMAILS.includes(email)) {
-        const name = email.split('@')[0];
         const profile = userProfiles[email];
         setUser({
           email,
-          name: name.charAt(0).toUpperCase() + name.slice(1),
+          name: displayNames[email] || email.split('@')[0],
           avatar: profile?.avatar || 'bg-gradient-to-br from-slate-500 to-slate-600',
           photo: profile?.photo || '',
         });
