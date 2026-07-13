@@ -18,7 +18,7 @@ const TASK_NAMES = [
 ] as const;
 
 const ITEMS_PER_TASK = 10;
-const MAX_TASKS = 10;
+const MAX_TASKS = 11;
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
