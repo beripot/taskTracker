@@ -1,25 +1,32 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { cn } from '../utils/cn';
 import { submitToGoogleSheet } from '../utils/submitToSheet';
+import { saveSession, loadSession, clearSession, SESSION_KEYS } from '../utils/sessions';
 import {
   LogOutIcon, ClipboardIcon, ClockIcon, PlusIcon,
   ChevronDownIcon, ChevronUpIcon, TrashIcon, CheckIcon, XIcon,
   BarChartIcon, HashIcon, AlertIcon, RefreshIcon, ShopeeLogo, SendIcon,
 } from './Icons';
+
 // ─── Constants ───────────────────────────────────────────────────────────────
+
 const TASK_NAMES = [
   'Inherit Traffic Daily QC',
   'Bidding - Seller Appeal',
   'Inherit Traffic High Imp',
   'Bidding Winner Pool QC',
 ] as const;
+
 const ITEMS_PER_TASK = 10;
 const MAX_TASKS = 10;
+
 // ─── Types ───────────────────────────────────────────────────────────────────
+
 interface TaskItem {
   taskId: string;
   answer: 'yes' | 'no' | '';
 }
+
 interface Task {
   id: number;
   taskName: string;
@@ -27,13 +34,16 @@ interface Task {
   endTime: string;
   items: TaskItem[];
 }
+
 interface UserInfo {
   email: string;
   name: string;
   avatar: string;
   photo: string;
 }
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
+
 function createEmptyTask(id: number): Task {
   return {
     id,
@@ -43,18 +53,21 @@ function createEmptyTask(id: number): Task {
     items: Array.from({ length: ITEMS_PER_TASK }, () => ({ taskId: '', answer: '' as const })),
   };
 }
+
 function parseTimeToMinutes(time: string): number | null {
   if (!time) return null;
   const [h, m] = time.split(':').map(Number);
   if (isNaN(h) || isNaN(m)) return null;
   return h * 60 + m;
 }
+
 function formatDuration(minutes: number): string {
   const h = Math.floor(minutes / 60);
   const m = Math.round(minutes % 60);
   if (h === 0) return `${m}m`;
   return `${h}h ${m}m`;
 }
+
 function addMinutesToTime(time: string, minutesToAdd: number): string {
   const totalMinutes = parseTimeToMinutes(time);
   if (totalMinutes === null) return '';
@@ -64,7 +77,9 @@ function addMinutesToTime(time: string, minutesToAdd: number): string {
   const m = newTotal % 60;
   return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
 }
+
 // ─── Task Card ───────────────────────────────────────────────────────────────
+
 interface TaskCardProps {
   task: Task;
   index: number;
@@ -72,8 +87,10 @@ interface TaskCardProps {
   onRemove: () => void;
   canRemove: boolean;
 }
+
 const TaskCard = ({ task, index, onUpdate, onRemove, canRemove }: TaskCardProps) => {
   const [isExpanded, setIsExpanded] = useState(true);
+
   const taskDuration = useMemo(() => {
     const start = parseTimeToMinutes(task.startTime);
     const end = parseTimeToMinutes(task.endTime);
@@ -82,16 +99,20 @@ const TaskCard = ({ task, index, onUpdate, onRemove, canRemove }: TaskCardProps)
     if (diff < 0) diff += 24 * 60;
     return diff;
   }, [task.startTime, task.endTime]);
+
   const filledItems = task.items.filter((i) => i.taskId.trim() !== '').length;
   const answeredItems = task.items.filter((i) => i.answer !== '').length;
   const yesCount = task.items.filter((i) => i.answer === 'yes').length;
   const noCount = task.items.filter((i) => i.answer === 'no').length;
+
   const isComplete = task.taskName !== '' && task.startTime !== '' && task.endTime !== '' && filledItems === ITEMS_PER_TASK && answeredItems === ITEMS_PER_TASK;
+
   const updateItem = (itemIndex: number, field: keyof TaskItem, value: string) => {
     const newItems = [...task.items];
     newItems[itemIndex] = { ...newItems[itemIndex], [field]: value };
     onUpdate({ ...task, items: newItems });
   };
+
   const taskColor = useMemo(() => {
     const colors: Record<string, { bg: string; border: string; text: string; badge: string; dot: string }> = {
       'Inherit Traffic Daily QC': { bg: 'bg-blue-50', border: 'border-blue-200', text: 'text-blue-700', badge: 'bg-blue-100 text-blue-700', dot: 'bg-blue-500' },
@@ -101,6 +122,7 @@ const TaskCard = ({ task, index, onUpdate, onRemove, canRemove }: TaskCardProps)
     };
     return colors[task.taskName] || { bg: 'bg-slate-50', border: 'border-slate-200', text: 'text-slate-700', badge: 'bg-slate-100 text-slate-600', dot: 'bg-slate-400' };
   }, [task.taskName]);
+
   return (
     <div className={cn(
       'rounded-xl border bg-white shadow-sm transition-all duration-300 hover:shadow-md',
@@ -117,6 +139,7 @@ const TaskCard = ({ task, index, onUpdate, onRemove, canRemove }: TaskCardProps)
         )}>
           {isComplete ? <CheckIcon className="text-emerald-600" /> : index + 1}
         </div>
+
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <h3 className="text-sm font-semibold text-slate-800 truncate">
@@ -142,6 +165,7 @@ const TaskCard = ({ task, index, onUpdate, onRemove, canRemove }: TaskCardProps)
             )}
           </div>
         </div>
+
         <div className="flex items-center gap-1.5">
           {canRemove && (
             <button
@@ -159,6 +183,7 @@ const TaskCard = ({ task, index, onUpdate, onRemove, canRemove }: TaskCardProps)
           )}
         </div>
       </div>
+
       {/* Expanded Content */}
       <div className={cn(
         'overflow-hidden transition-all duration-300',
@@ -192,6 +217,7 @@ const TaskCard = ({ task, index, onUpdate, onRemove, canRemove }: TaskCardProps)
                 <ChevronDownIcon className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
               </div>
             </div>
+
             {/* Start Time */}
             <div>
               <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
@@ -208,6 +234,7 @@ const TaskCard = ({ task, index, onUpdate, onRemove, canRemove }: TaskCardProps)
                 className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-300 transition-all"
               />
             </div>
+
             {/* End Time */}
             <div>
               <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
@@ -221,6 +248,7 @@ const TaskCard = ({ task, index, onUpdate, onRemove, canRemove }: TaskCardProps)
               />
             </div>
           </div>
+
           {/* Duration badge */}
           {taskDuration !== null && (
             <div className="flex items-center gap-2">
@@ -230,6 +258,7 @@ const TaskCard = ({ task, index, onUpdate, onRemove, canRemove }: TaskCardProps)
               </div>
             </div>
           )}
+
           {/* Items Table */}
           <div>
             <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
@@ -242,6 +271,7 @@ const TaskCard = ({ task, index, onUpdate, onRemove, canRemove }: TaskCardProps)
                 <span className="text-[11px] font-semibold text-slate-400 uppercase">Task ID</span>
                 <span className="text-[11px] font-semibold text-slate-400 uppercase text-center">Answer</span>
               </div>
+
               {/* Table Rows */}
               {task.items.map((item, i) => (
                 <div
@@ -254,6 +284,7 @@ const TaskCard = ({ task, index, onUpdate, onRemove, canRemove }: TaskCardProps)
                 >
                   {/* Row number */}
                   <span className="text-xs text-slate-400 font-mono">{i + 1}</span>
+
                   {/* Task ID input */}
                   <div className="pr-2">
                     <input
@@ -271,6 +302,7 @@ const TaskCard = ({ task, index, onUpdate, onRemove, canRemove }: TaskCardProps)
                       className="w-full rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-sm text-slate-700 outline-none placeholder:text-slate-300 focus:ring-2 focus:ring-indigo-100 focus:border-indigo-300 transition-all"
                     />
                   </div>
+
                   {/* Yes / No buttons */}
                   <div className="flex items-center justify-center gap-1.5">
                     <button
@@ -307,7 +339,9 @@ const TaskCard = ({ task, index, onUpdate, onRemove, canRemove }: TaskCardProps)
     </div>
   );
 };
+
 // ─── Summary Panel ───────────────────────────────────────────────────────────
+
 interface SummaryPanelProps {
   tasks: Task[];
   isFullyComplete: boolean;
@@ -316,6 +350,7 @@ interface SummaryPanelProps {
   onSubmit: () => void;
   onNewBatch: () => void;
 }
+
 const SummaryPanel = ({ tasks, isFullyComplete, submitState, submitMessage, onSubmit, onNewBatch }: SummaryPanelProps) => {
   const stats = useMemo(() => {
     let totalMinutes = 0;
@@ -325,9 +360,11 @@ const SummaryPanel = ({ tasks, isFullyComplete, submitState, submitMessage, onSu
     let totalNo = 0;
     let totalAnswered = 0;
     const taskBreakdown: { name: string; duration: number; items: number; yes: number; no: number }[] = [];
+
     for (let idx = 0; idx < tasks.length; idx++) {
       const task = tasks[idx];
       const hasName = task.taskName !== '';
+
       const start = parseTimeToMinutes(task.startTime);
       const end = parseTimeToMinutes(task.endTime);
       let duration = 0;
@@ -336,16 +373,20 @@ const SummaryPanel = ({ tasks, isFullyComplete, submitState, submitMessage, onSu
         if (duration < 0) duration += 24 * 60;
         totalMinutes += duration;
       }
+
       const filled = task.items.filter((i) => i.taskId.trim() !== '').length;
       const yes = task.items.filter((i) => i.answer === 'yes').length;
       const no = task.items.filter((i) => i.answer === 'no').length;
       const answered = task.items.filter((i) => i.answer !== '').length;
+
       totalItemsFilled += filled;
       totalYes += yes;
       totalNo += no;
       totalAnswered += answered;
+
       const isComplete = hasName && task.startTime !== '' && task.endTime !== '' && filled === ITEMS_PER_TASK && answered === ITEMS_PER_TASK;
       if (isComplete) completedTasks++;
+
       taskBreakdown.push({
         name: hasName ? task.taskName : `Task ${idx + 1} (unnamed)`,
         duration,
@@ -354,14 +395,16 @@ const SummaryPanel = ({ tasks, isFullyComplete, submitState, submitMessage, onSu
         no,
       });
     }
+
     return { totalMinutes, completedTasks, totalItemsFilled, totalYes, totalNo, totalAnswered, taskBreakdown };
   }, [tasks]);
+
   const totalTasks = tasks.length;
+
   return (
     <div className="space-y-5">
       {/* Main Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {/* Total Time */}
         <div className="rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 p-4 text-white shadow-lg shadow-indigo-200/50">
           <div className="flex items-center gap-2 mb-2">
             <ClockIcon className="w-4 h-4 opacity-80" />
@@ -370,7 +413,7 @@ const SummaryPanel = ({ tasks, isFullyComplete, submitState, submitMessage, onSu
           <div className="text-2xl font-bold">{formatDuration(stats.totalMinutes)}</div>
           <div className="text-xs opacity-70 mt-1">{stats.totalMinutes} minutes total</div>
         </div>
-        {/* Tasks Done */}
+
         <div className="rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 p-4 text-white shadow-lg shadow-emerald-200/50">
           <div className="flex items-center gap-2 mb-2">
             <ClipboardIcon className="w-4 h-4 opacity-80" />
@@ -379,7 +422,7 @@ const SummaryPanel = ({ tasks, isFullyComplete, submitState, submitMessage, onSu
           <div className="text-2xl font-bold">{stats.completedTasks}/{totalTasks}</div>
           <div className="text-xs opacity-70 mt-1">completed tasks</div>
         </div>
-        {/* Items Filled */}
+
         <div className="rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 p-4 text-white shadow-lg shadow-amber-200/50">
           <div className="flex items-center gap-2 mb-2">
             <HashIcon className="w-4 h-4 opacity-80" />
@@ -388,7 +431,7 @@ const SummaryPanel = ({ tasks, isFullyComplete, submitState, submitMessage, onSu
           <div className="text-2xl font-bold">{stats.totalItemsFilled}</div>
           <div className="text-xs opacity-70 mt-1">of {totalTasks * ITEMS_PER_TASK} items filled</div>
         </div>
-        {/* Yes / No */}
+
         <div className="rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 p-4 text-white shadow-lg shadow-sky-200/50">
           <div className="flex items-center gap-2 mb-2">
             <BarChartIcon className="w-4 h-4 opacity-80" />
@@ -398,6 +441,7 @@ const SummaryPanel = ({ tasks, isFullyComplete, submitState, submitMessage, onSu
           <div className="text-xs opacity-70 mt-1">yes / no ({stats.totalAnswered} answered)</div>
         </div>
       </div>
+
       {/* Per-Task Breakdown */}
       {stats.taskBreakdown.length > 0 && (
         <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
@@ -418,6 +462,7 @@ const SummaryPanel = ({ tasks, isFullyComplete, submitState, submitMessage, onSu
               const barColor = colorMap[tb.name] || 'bg-slate-400';
               const maxDuration = Math.max(...stats.taskBreakdown.map((t) => t.duration), 1);
               const barWidth = (tb.duration / maxDuration) * 100;
+
               return (
                 <div key={i} className="px-4 py-3">
                   <div className="flex items-center justify-between mb-1.5">
@@ -454,6 +499,7 @@ const SummaryPanel = ({ tasks, isFullyComplete, submitState, submitMessage, onSu
           </div>
         </div>
       )}
+
       {/* ─── Submit Button — only when ALL 10 tasks are 100% complete ─── */}
       {isFullyComplete && (
         <div className={cn(
@@ -546,64 +592,95 @@ const SummaryPanel = ({ tasks, isFullyComplete, submitState, submitMessage, onSu
     </div>
   );
 };
+
 // ─── Main TaskTracker Component ──────────────────────────────────────────────
+
 interface TaskTrackerProps {
   user: UserInfo;
   onLogout: () => void;
 }
+
 export default function TaskTracker({ user, onLogout }: TaskTrackerProps) {
-  const [tasks, setTasks] = useState<Task[]>([createEmptyTask(1)]);
-  const [showSummary, setShowSummary] = useState(false);
+  // Restore saved state from session
+  const savedTasks = loadSession<Task[]>(SESSION_KEYS.TASKS);
+  const savedTab = loadSession<boolean>(SESSION_KEYS.TAB);
+
+  const [tasks, setTasks] = useState<Task[]>(savedTasks && savedTasks.length > 0 ? savedTasks : [createEmptyTask(1)]);
+  const [showSummary, setShowSummary] = useState(savedTab ?? false);
   const [submitState, setSubmitState] = useState<'idle' | 'submitting' | 'submitted' | 'error'>('idle');
   const [submitMessage, setSubmitMessage] = useState('');
+
+  // Persist tasks whenever they change
+  const persistTasks = useCallback((newTasks: Task[]) => {
+    setTasks(newTasks);
+    saveSession(SESSION_KEYS.TASKS, newTasks);
+  }, []);
+
+  // Persist tab whenever it changes
+  useEffect(() => {
+    saveSession(SESSION_KEYS.TAB, showSummary);
+  }, [showSummary]);
+
   const addTask = () => {
     if (tasks.length >= MAX_TASKS) return;
-    setTasks([...tasks, createEmptyTask(tasks.length + 1)]);
+    persistTasks([...tasks, createEmptyTask(tasks.length + 1)]);
   };
+
   const removeTask = (index: number) => {
     if (tasks.length <= 1) return;
     const newTasks = tasks.filter((_, i) => i !== index).map((t, i) => ({ ...t, id: i + 1 }));
-    setTasks(newTasks);
+    persistTasks(newTasks);
   };
+
   const updateTask = (index: number, updatedTask: Task) => {
     const newTasks = [...tasks];
     newTasks[index] = updatedTask;
-    setTasks(newTasks);
+    persistTasks(newTasks);
   };
+
   const resetAll = () => {
-    setTasks([createEmptyTask(1)]);
+    persistTasks([createEmptyTask(1)]);
     setShowSummary(false);
     setSubmitState('idle');
     setSubmitMessage('');
+    clearSession(SESSION_KEYS.TASKS);
+    clearSession(SESSION_KEYS.TAB);
   };
+
   const handleNewBatch = () => {
-    setTasks([createEmptyTask(1)]);
+    persistTasks([createEmptyTask(1)]);
     setShowSummary(false);
     setSubmitState('idle');
     setSubmitMessage('');
   };
+
   const todayFormatted = new Date().toLocaleDateString('en-US', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   });
+
   const activeTasks = tasks.filter((t) => t.taskName !== '');
   const allComplete = activeTasks.length > 0 && activeTasks.every(
     (t) => t.startTime && t.endTime && t.items.every((i) => i.taskId.trim() && i.answer !== '')
   );
+
   // Fully complete = exactly 10 tasks, each with name, times, and all 10 items filled + answered
   const isFullyComplete = tasks.length === MAX_TASKS && tasks.every(
     (t) => t.taskName !== '' && t.startTime !== '' && t.endTime !== '' &&
       t.items.every((i) => i.taskId.trim() !== '' && i.answer !== '')
   );
+
   const handleSubmit = async () => {
     if (!isFullyComplete || (submitState !== 'idle' && submitState !== 'error')) return;
     setSubmitState('submitting');
     setSubmitMessage('');
+
     try {
       const agentName = user.name;
       const result = await submitToGoogleSheet(agentName, tasks);
+
       if (result.success) {
         setSubmitState('submitted');
         setSubmitMessage(result.message);
@@ -616,8 +693,10 @@ export default function TaskTracker({ user, onLogout }: TaskTrackerProps) {
       setSubmitMessage('An unexpected error occurred. Please try again.');
     }
   };
+
   const totalItems = tasks.reduce((acc, t) => acc + t.items.filter((i) => i.taskId.trim()).length, 0);
   const totalAnswered = tasks.reduce((acc, t) => acc + t.items.filter((i) => i.answer !== '').length, 0);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 zebra-bg">
       {/* Navigation Bar */}
@@ -633,7 +712,6 @@ export default function TaskTracker({ user, onLogout }: TaskTrackerProps) {
             </div>
           </div>
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Quick stats */}
             <div className="hidden md:flex items-center gap-3 mr-2 text-xs text-slate-500">
               <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100">
                 <ClipboardIcon className="w-3.5 h-3.5" />
@@ -669,6 +747,7 @@ export default function TaskTracker({ user, onLogout }: TaskTrackerProps) {
           </div>
         </div>
       </nav>
+
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Page Header */}
         <div className="mb-6 sm:mb-8 animate-fade-in-up">
@@ -687,6 +766,7 @@ export default function TaskTracker({ user, onLogout }: TaskTrackerProps) {
             </div>
           </div>
         </div>
+
         {/* Tab toggle */}
         <div className="flex items-center gap-2 mb-6 p-1 bg-slate-100 rounded-xl w-fit">
           <button
@@ -714,8 +794,8 @@ export default function TaskTracker({ user, onLogout }: TaskTrackerProps) {
             Summary
           </button>
         </div>
+
         {showSummary ? (
-          /* ─── SUMMARY VIEW ─── */
           <div className="animate-fade-in-up">
             {activeTasks.length === 0 ? (
               <div className="text-center py-16 rounded-xl border-2 border-dashed border-slate-200">
@@ -728,7 +808,6 @@ export default function TaskTracker({ user, onLogout }: TaskTrackerProps) {
             )}
           </div>
         ) : (
-          /* ─── TASKS VIEW ─── */
           <div className="space-y-4 animate-fade-in-up">
             {/* Progress bar */}
             <div className="rounded-xl border border-slate-200 bg-white p-4">
@@ -760,6 +839,7 @@ export default function TaskTracker({ user, onLogout }: TaskTrackerProps) {
                 </div>
               )}
             </div>
+
             {/* Task Cards */}
             {tasks.map((task, index) => (
               <TaskCard
@@ -771,6 +851,7 @@ export default function TaskTracker({ user, onLogout }: TaskTrackerProps) {
                 canRemove={tasks.length > 1}
               />
             ))}
+
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
               {tasks.length < MAX_TASKS && (
@@ -788,6 +869,7 @@ export default function TaskTracker({ user, onLogout }: TaskTrackerProps) {
                   Maximum of {MAX_TASKS} tasks reached
                 </div>
               )}
+
               <button
                 onClick={resetAll}
                 className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl border border-slate-200 text-sm font-medium text-slate-500 hover:bg-red-50 hover:border-red-200 hover:text-red-600 active:scale-[0.98] transition-all sm:ml-auto"
@@ -799,6 +881,7 @@ export default function TaskTracker({ user, onLogout }: TaskTrackerProps) {
           </div>
         )}
       </div>
+
       {/* Footer */}
       <footer className="border-t border-slate-200/60 bg-white/50 mt-8">
         <div className="max-w-6xl mx-auto px-6 py-5 text-center text-xs text-slate-400">

@@ -1,9 +1,10 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { cn } from './utils/cn';
 import { GoogleSignInModal, AccessDenied } from './components/LoginComponents';
 import { CheckCircleIcon, ShieldIcon, ShopeeLogo, GoogleIcon } from './components/Icons';
 import TaskTracker from './components/TaskTracker';
 import ContactSupport from './components/ContactSupport';
+import { saveSession, loadSession, clearSession, SESSION_KEYS } from './utils/sessions';
 
 // ─── Allowed Emails ──────────────────────────────────────────────────────────
 
@@ -30,10 +31,13 @@ type Page = 'login' | 'support';
 // ─── App ─────────────────────────────────────────────────────────────────────
 
 export default function App() {
-  const [authState, setAuthState] = useState<AuthState>('idle');
+  // Restore session on mount
+  const savedUser = loadSession<UserInfo>(SESSION_KEYS.USER);
+
+  const [authState, setAuthState] = useState<AuthState>(savedUser ? 'success' : 'idle');
   const [showModal, setShowModal] = useState(false);
   const [deniedEmail, setDeniedEmail] = useState('');
-  const [user, setUser] = useState<UserInfo | null>(null);
+  const [user, setUser] = useState<UserInfo | null>(savedUser);
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState<Page>('login');
 
@@ -56,6 +60,13 @@ export default function App() {
     },
   };
 
+  // Save user to session whenever it changes
+  useEffect(() => {
+    if (user && authState === 'success') {
+      saveSession(SESSION_KEYS.USER, user);
+    }
+  }, [user, authState]);
+
   const handleGoogleSignIn = useCallback(() => {
     setShowModal(true);
     setAuthState('signing-in');
@@ -71,6 +82,7 @@ export default function App() {
       'zbragt940@shopeemobile-external.com': 'Nahre Fuentes',
       'zbragt952@shopeemobile-external.com': 'Phillip John Mamac',
     };
+
     setTimeout(() => {
       if (ALLOWED_EMAILS.includes(email)) {
         const profile = userProfiles[email];
@@ -101,6 +113,9 @@ export default function App() {
     setUser(null);
     setAuthState('idle');
     setPage('login');
+    clearSession(SESSION_KEYS.USER);
+    clearSession(SESSION_KEYS.TASKS);
+    clearSession(SESSION_KEYS.TAB);
   }, []);
 
   // ─── Contact Support Page ──────────────────────────────────────────────────
